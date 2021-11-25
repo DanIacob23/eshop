@@ -1,0 +1,1 @@
+1)choose file---Each browser has it's own rendition of the control and as such you can't change either the text or the orientation of the control.

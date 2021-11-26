@@ -1,6 +1,14 @@
 <?php
 require_once "./common.php";
 $data=getAllProductsInfo();
+if (isset($_GET["deleteId"])) {
+    if(unlink('images/'.$_GET["deleteId"].'.jpg')){
+        deleteProduct($_GET["deleteId"]);
+    }else{
+        unlink('images/'.$_GET["deleteId"].'.png');
+        deleteProduct($_GET["deleteId"]);
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="eng">
@@ -41,11 +49,10 @@ $data=getAllProductsInfo();
 
         <div class="optionsAdmin">
             <form method="POST" action="product.php" >
-                 <input type="submit" name="adminAdd" value="Add">
+                <a href="product.php">Add</a>
             </form>
             <input type="submit" name="adminLogout" value="Logout">
         </div>
-
     </main>
 </body>
 </html>

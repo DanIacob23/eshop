@@ -36,13 +36,14 @@ function productUpdate($id,$title,$description,$price){
     ]);
 }
 
-function productInsert($title,$description,$price){//de refacut pt ca trb si extensia
-    $sql = "INSERT INTO products(title,description,price)VALUES(:title,:description,:price)";
+function productInsert($title,$description,$price,$extension){
+    $sql = "INSERT INTO products(title,description,price,fileType)VALUES(:title,:description,:price,:fileType)";
     $cerere = BD::obtain_connexion()->prepare($sql);
     $cerere -> execute([
         'title'=>$title,//htmlspecialchars OR strip_tags For XSS attacks
         'description'=>$description,
-        'price'=>$price
+        'price'=>$price,
+        'fileType'=>$extension
     ]);
 }
 
@@ -51,6 +52,14 @@ function updateProductExtension($id,$ext){
     $cerere = BD::obtain_connexion()->prepare($sql);
     $cerere -> execute([
         'fileType'=>$ext,
+        'id'=>$id
+    ]);
+}
+
+function deleteProduct($id){
+    $sql = "DELETE FROM  products where id = :id";
+    $cerere = BD::obtain_connexion()->prepare($sql);
+    $cerere -> execute([
         'id'=>$id
     ]);
 }

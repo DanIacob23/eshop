@@ -16,6 +16,13 @@ INSERT INTO `products`(`title`,`description`,`price`,`fileType`) VALUES
 ('Relaxed Fit jumper','Jumper in a soft knit containing some wool with dropped shoulders, long sleeves and ribbing around the neckline, cuffs and hem.','99','.jpg'),
 ('Relaxed Fit Hoodie','Hoodie in sweatshirt fabric made from a cotton blend. Relaxed fit with a lined, drawstring hood, long sleeves, kangaroo pocket and ribbing at the cuffs and hem. Soft brushed inside.','199','.jpg');
 
+
+CREATE TABLE `orders`(
+    `userName` varchar(50) COLLATE utf8_romanian_ci NOT NULL,
+    `contactDetails` varchar(500) COLLATE utf8_romanian_ci NOT NULL,
+    `comments` varchar(50) COLLATE utf8_romanian_ci NOT NULL,
+    `productsId` varchar(500) COLLATE utf8_romanian_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_romanian_ci;
 --
 --  Indexes FOR TABLE `products
 ALTER TABLE `products`

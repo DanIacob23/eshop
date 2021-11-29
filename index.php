@@ -5,7 +5,6 @@ $data=getAllProductsInfo();
 
 if (!isset($_GET['id'])) {
     $_SESSION['cart']=array();
-    $_SESSION['cart'][77]=9;
 }
 
 function addToCart($id) {
@@ -39,7 +38,7 @@ if (isset($_POST["addCart"])) {
                             <div class="infos">
                                 <h3>Title<?=$product['title']?></h3>
                                 <p>Description<?=$product['description']?></p>
-                                <p>Price <span style="color:blue;font-weight:bold"><?=$product['price']?> $</span>
+                                <p>Price <span style="color:blue;font-weight:bold"><?=$product['price']?> $</span></p>
                             </div>
                             <div>
                             <input type="submit" name="addCart" value="Add">
@@ -49,6 +48,6 @@ if (isset($_POST["addCart"])) {
                  <?php endif;?>
             <?php endforeach;?>
         </main>
-        <a href="./cart.php" id="cart">Go to cart</a>
+        <a href="cart.php" id="cart">Go to cart</a>
     </body>
 </html>

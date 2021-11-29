@@ -63,3 +63,38 @@ function deleteProduct($id){
         'id'=>$id
     ]);
 }
+
+function insertNewOrder($userName,$details,$comments,$productsId){
+    $sql = "INSERT INTO orders(userName,contactDetails,comments,productsId,datetime)VALUES(:userName,:contactDetails,:comments,:productsId,:datetime)";
+    $cerere = BD::obtain_connexion()->prepare($sql);
+    $cerere -> execute([
+        'userName'=>$userName,//htmlspecialchars OR strip_tags For XSS attacks
+        'contactDetails'=>$details,
+        'comments'=>$comments,
+        'productsId'=>$productsId,
+        'datetime'=>date("Y/m/d")
+    ]);
+}
+
+function getLastRow(){
+    $sql = " select * from orders ORDER BY id DESC LIMIT 1";
+    $cerere = BD::obtain_connexion()->prepare($sql);
+    $cerere -> execute();
+    return $cerere->fetchAll();
+}
+
+function selectPropertyByID($id,$property){
+    $sql = "SELECT $property FROM products where id=:id";
+    $cerere = BD::obtain_connexion()->prepare($sql);
+    $cerere -> execute([
+        'id'=>$id
+    ]);
+    return $cerere->fetchAll();
+}
+
+function getAllOrders(){
+    $sql = "SELECT * FROM orders ";
+    $cerere = BD::obtain_connexion()->prepare($sql);
+    $cerere -> execute();
+    return $cerere->fetchAll();
+}

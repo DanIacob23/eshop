@@ -2,13 +2,28 @@
 session_start();
 require_once "./common.php";
 $data=getAllProductsInfo();
-
 function removeToCart($id){
     unset( $_SESSION['cart'][$id]);
 }
 if (isset($_POST["removeToCart"])) {
     removeToCart($_GET["id"]);
 }
+
+if (isset($_POST["checkout"])) {
+    //conf mail
+    $productsId='';
+    foreach (array_keys($_SESSION['cart'])as $product){
+        $productsId=$productsId.$product.'/';
+    }
+    if($_POST["name"]!='' && $_POST["contactDetails"]!='' && $_POST["comments"]!='' && $productsId!=''){
+        $_SESSION['cart']=array();
+        insertNewOrder(strip_tags($_POST["name"]),strip_tags($_POST["contactDetails"]),strip_tags($_POST["comments"]),$productsId);
+        header('Location: order.php');
+        die();
+    }
+
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="eng">
@@ -41,10 +56,10 @@ if (isset($_POST["removeToCart"])) {
                     <input type="text" id="contactDetails" name="contactDetails" size="50" placeholder="Contact details">
                     <input type="text" id="comments" name="comments" size="50" placeholder="Comments">
                 </div>
-                <div class="checkout">
-                    <a href="index.php">Go to index</a>
-                    <input type="submit" value="Checkout">
-                </div>
+                    <div class="checkout">
+                        <a href="index.php?id=0">Go to index</a>
+                        <input type="submit" name="checkout" value="Checkout">
+                    </div>
             </form>
 
         </main>

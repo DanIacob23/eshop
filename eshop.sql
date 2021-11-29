@@ -18,12 +18,19 @@ INSERT INTO `products`(`title`,`description`,`price`,`fileType`) VALUES
 
 
 CREATE TABLE `orders`(
+    `id` int(10) NOT NULL AUTO_INCREMENT,
     `userName` varchar(50) COLLATE utf8_romanian_ci NOT NULL,
     `contactDetails` varchar(500) COLLATE utf8_romanian_ci NOT NULL,
     `comments` varchar(50) COLLATE utf8_romanian_ci NOT NULL,
-    `productsId` varchar(500) COLLATE utf8_romanian_ci NOT NULL
+    `productsId` varchar(500) COLLATE utf8_romanian_ci NOT NULL,
+    `datetime` varchar(50) COLLATE utf8_romanian_ci NOT NULL,
+    KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_romanian_ci;
 --
---  Indexes FOR TABLE `products
+--  Indexes FOR TABLE `products`
+ALTER TABLE `products`
+    ADD PRIMARY KEY (`id`)
+--
+--  Indexes FOR TABLE `orders`
 ALTER TABLE `products`
     ADD PRIMARY KEY (`id`)

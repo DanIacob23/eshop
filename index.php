@@ -23,7 +23,7 @@ if (isset($_POST["addCart"])) {
 <!DOCTYPE html>
 <html lang="eng">
     <head>
-        <title>Index</title>
+        <title><?=translate("Index","en")?></title>
         <link href="public/css/utils.css" rel="stylesheet">
     </head>
     <body>
@@ -33,21 +33,21 @@ if (isset($_POST["addCart"])) {
                     <form method="POST" action="index.php?id=<?=$product['id']?>" >
                         <div class="product">
                             <div>
-                                <img class="img-product" src="./images/<?= $product['id']?><?= $product['fileType']?>" alt="prod-img">
+                                <img class="img-product" src="./images/<?= $product['id']?><?= $product['fileType']?>" alt="<?=translate("Product Image","en")?>">
                             </div>
                             <div class="infos">
-                                <h3>Title<?=$product['title']?></h3>
-                                <p>Description<?=$product['description']?></p>
-                                <p>Price <span style="color:blue;font-weight:bold"><?=$product['price']?> $</span></p>
+                                <h3><?=translate("Title","en")?> <?=$product['title']?></h3>
+                                <p><?=translate("Description","en")?> <?=$product['description']?></p>
+                                <p><?=translate("Price","en")?> <span style="color:blue;font-weight:bold"><?=$product['price']?> $</span></p>
                             </div>
                             <div>
-                            <input type="submit" name="addCart" value="Add">
+                            <input type="submit" name="addCart" value="<?=translate("Add","en")?>">
                             </div>
                         </div>
                     </form>
                  <?php endif;?>
             <?php endforeach;?>
         </main>
-        <a href="cart.php" id="cart">Go to cart</a>
+        <a href="cart.php" id="cart"><?=translate("Go to cart","en")?></a>
     </body>
 </html>

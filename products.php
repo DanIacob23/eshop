@@ -9,6 +9,10 @@ if (isset($_GET["deleteId"])) {
         deleteProduct($_GET["deleteId"]);
     }
 }
+if (isset($_POST["adminLogout"])) {
+    header('Location: index.php');
+    die();
+}
 ?>
 <!DOCTYPE html>
 <html lang="eng">
@@ -22,26 +26,26 @@ if (isset($_GET["deleteId"])) {
         <?php foreach ($data as $product): ?>
                     <div class="product">
                         <div>
-                            <img class="img-product" src="./images/<?= $product['id']?><?= $product['fileType']?>" alt="prod-img">
+                            <img class="img-product" src="./images/<?= $product['id']?><?= $product['fileType']?>" alt="<?=translate("Product Image","en")?>">
                         </div>
 
                         <table>
                             <div class="infos">
-                                <h3>Title: <?=$product['title']?></h3>
-                                <p>Description: <?=$product['description']?></p>
-                                <p>Price: <span style="color:blue;font-weight:bold"><?=$product['price']?> $</span>
+                                <h3><?=translate("Title","en")?>: <?=$product['title']?></h3>
+                                <p><?=translate("Description","en")?>: <?=$product['description']?></p>
+                                <p><?=translate("Price","en")?>: <span style="color:blue;font-weight:bold"><?=$product['price']?> $</span>
                             </div>
                         </table>
 
                         <form method="POST" action="product.php?editId=<?=$product['id']?>" >
                             <div>
-                                <input type="submit" name="editProduct" value="Edit">
+                                <input type="submit" name="editProduct" value="<?=translate("Edit","en")?>">
                             </div>
                         </form>
 
                         <form method="POST" action="products.php?deleteId=<?=$product['id']?>" >
                             <div>
-                                <input type="submit" name="deleteProduct" value="Delete">
+                                <input type="submit" name="deleteProduct" value="<?=translate("Delete","en")?>">
                             </div>
                         </form>
                     </div>
@@ -49,9 +53,11 @@ if (isset($_GET["deleteId"])) {
 
         <div class="optionsAdmin">
             <form method="POST" action="product.php" >
-                <a href="product.php">Add</a>
+                <a href="product.php"><?=translate("Add","en")?></a>
             </form>
-            <input type="submit" name="adminLogout" value="Logout">
+            <form method="POST" action="" >
+                <input type="submit" name="adminLogout" value="<?=translate("Logout","en")?>">
+            </form>
         </div>
     </main>
 </body>

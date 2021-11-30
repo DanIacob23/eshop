@@ -33,28 +33,28 @@ else
 <!DOCTYPE html>
 <html lang="eng">
 <head>
-    <title>Cart</title>
+    <title><?=translate("Order","en")?></title>
     <link href="public/css/utils.css" rel="stylesheet">
 </head>
 <body>
 <main>
     <div class="order">
         <ul>
-            <li>Your name: <?= $lastRow[0]['userName']?></li>
-            <li>Your contact details: <?= $lastRow[0]['contactDetails']?></li>
-            <li>Your comments: <?= $lastRow[0]['comments']?></li>
+            <li><?=translate("Name","en")?>: <?= $lastRow[0]['userName']?></li>
+            <li><?=translate("Contact details","en")?>: <?= $lastRow[0]['contactDetails']?></li>
+            <li><?=translate("Comments","en")?>: <?= $lastRow[0]['comments']?></li>
         </ul>
-        <h3>Your cart: </h3>
+        <h3><?=translate("Cart","en")?>: </h3>
         <div class="cart">
             <?php foreach (array_values($productsId )as $id): ?>
                 <div class="product">
                     <div>
-                        <img class="img-product" src="./images/<?=$id?><?=selectPropertyByID($id,'fileType')[0]['fileType']?>" alt="prod-img">
+                        <img class="img-product" src="./images/<?=$id?><?=selectPropertyByID($id,'fileType')[0]['fileType']?>" alt="<?=translate("Product Image","en")?>">
                     </div>
                     <div class="infos">
-                        <h3>Title<?=selectPropertyByID($id,'title')[0]['title']?></h3>
-                        <p>Description<?=selectPropertyByID($id,'description')[0]['description']?></p>
-                        <p>Price <span style="color:blue;font-weight:bold"><?=selectPropertyByID($id,'price')[0]['price']?> $</span></p>
+                        <h3><?=translate("Title","en")?> <?=selectPropertyByID($id,'title')[0]['title']?></h3>
+                        <p><?=translate("Description","en")?> <?=selectPropertyByID($id,'description')[0]['description']?></p>
+                        <p><?=translate("Price","en")?> <span style="color:blue;font-weight:bold"><?=selectPropertyByID($id,'price')[0]['price']?> $</span></p>
                     </div>
                 </div>
             <?php endforeach;?>

@@ -143,7 +143,7 @@ if(isset($_POST["save"]) && $_POST["title"]!='title' && $_POST["description"]!='
 <!DOCTYPE html>
 <html lang="eng">
 <head>
-    <title>Product</title>
+    <title><?=translate("Product","en")?></title>
     <link href="public/css/utils.css" rel="stylesheet">
 </head>
 <body>

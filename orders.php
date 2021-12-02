@@ -1,6 +1,6 @@
 <?php
 require_once "./common.php";
-$data=getAllOrders();
+$data = getAllOrders();
 ?>
 <!DOCTYPE html>
 <html lang="eng">

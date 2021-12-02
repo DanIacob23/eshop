@@ -1,10 +1,10 @@
 <?php
 require_once "./common.php";
-$data=getAllProductsInfo();
+$data = getAllProductsInfo();
 if (isset($_GET["deleteId"])) {
-    if(unlink('images/'.$_GET["deleteId"].'.jpg')){
+    if (unlink('images/'.$_GET["deleteId"].'.jpg')) {
         deleteProduct($_GET["deleteId"]);
-    }else{
+    } else {
         unlink('images/'.$_GET["deleteId"].'.png');
         deleteProduct($_GET["deleteId"]);
     }

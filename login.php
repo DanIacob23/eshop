@@ -1,7 +1,7 @@
 <?php
 require_once'config.php';
 require_once "./common.php";
-if(isset($_POST["submit"])){
+if (isset($_POST["submit"])) {
     if($_POST["fname"]==adminUserName && $_POST["pass"]==adminPass){
         header('Location: products.php');
         die();

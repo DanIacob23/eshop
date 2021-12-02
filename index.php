@@ -1,22 +1,21 @@
 <?php
 session_start();
 require_once "./common.php";
-$data=getAllProductsInfo();
+$data = getAllProductsInfo();
 
-if (!isset($_GET['id'])) {
-    $_SESSION['cart']=array();
+if (!isset( $_GET['id'] )) {
+    $_SESSION['cart'] = [];
 }
 
-function addToCart($id) {
+function addToCart($id)
+{
     if (array_key_exists($id, $_SESSION['cart'])) {//if already exists
-        $_SESSION['cart'][$id]= intval($_SESSION['cart'][$id])+1;
-        print_r($_SESSION['cart']);
-    }else{
-        $_SESSION['cart'][$id]=1;
-        print_r($_SESSION['cart']);
+        $_SESSION['cart'][$id] = intval($_SESSION['cart'][$id]) + 1;
+    } else {
+        $_SESSION['cart'][$id] = 1;
     }
 }
-if (isset($_POST["addCart"])) {
+if (isset( $_POST["addCart"] )) {
     addToCart($_GET["id"]);
 }
 ?>

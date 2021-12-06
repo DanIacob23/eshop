@@ -1,22 +1,32 @@
 <?php
 require_once "./common.php";
-$data=getAllProductsInfo();
-
-if (isset($_GET["editId"])){
-    $title=$data[intval($_GET["editId"])-1]['title'];
-    $description=$data[intval($_GET["editId"])-1]['description'];
-    $price=$data[intval($_GET["editId"])-1]['price'];
-}else{
-    $title = 'title';
-    $description= 'description';
-    $price= 'price';
+$data = getAllProductsInfo();
+function validation()
+{
+    if (empty($_POST["title"])
+        or empty($_POST["description"])
+        or empty($_POST["price"])
+    ) {
+        throw new Exception("One of the field is empty");
+      }
+    return true;
 }
+
 $validationPrice=true;
 if (isset($_POST['price'])) {
     if($_POST['price'] != '' && !is_numeric($_POST['price'])){
         $validationPrice = false;
     }
 }
+
+$empty='';
+try {
+    validation(). "\n";
+} catch (Exception $e) {
+    $empty= 'Fill in all the fields: '.  $e->getMessage();
+    $validationPrice = false;
+}
+
 $checkImg='';
 function updateImage($idd,$target_file,$oldPath)
 {
@@ -123,21 +133,22 @@ function insertNewImage(){
 
 if (
     isset($_POST["save"])
-    && $_POST["title"]!='title'
-    && $_POST["description"]!='description'
-    && $_POST["price"]!='price'
-    && $validationPrice)
-{//after data validation
-    if (isset($_GET["editId"]) ) {// update
-        $title=$_POST["title"];
-        $description=$_POST["description"];
-        $price=$_POST["price"];
-        productUpdate($_GET["editId"],$title,$description,$price);
+    && isset($_POST["title"]) && !empty($_POST["title"])
+    && isset($_POST["description"]) && !empty($_POST["description"])
+    && isset($_POST["price"]) && !empty($_POST["price"])
+    && $validationPrice
+) { echo 'salut1'.$_POST["editId"];
+    if (isset($_POST["editId"]) ) {// update
+        $title = $_POST["title"];
+        $description = $_POST["description"];
+        $price = $_POST["price"];
+        echo 'salut2';
+        productUpdate($_POST["editId"],$title,$description,$price);
         if ($_FILES["fileToUpload"]["name"]!='') {
-            $oldPath = 'images/' . $_GET["editId"] . $data[intval($_GET["editId"]) - 1]['fileType'];// remove old image
+            $oldPath = 'images/' . $_POST["editId"] . $data[intval($_POST["editId"]) - 1]['fileType'];// remove old image
             $extension = '.' . pathinfo(basename($_FILES["fileToUpload"]["name"]), PATHINFO_EXTENSION);//new extension
 
-            updateImage($_GET["editId"], "images/" . $_GET["editId"] . $extension, $oldPath);//keep old name and update image
+            updateImage($_POST["editId"], "images/" . $_POST["editId"] . $extension, $oldPath);//keep old name and update image
         }//otherwise, it keeps the old image
     } else {
         if ($_FILES["fileToUpload"]["name"]!='') {
@@ -147,29 +158,38 @@ if (
             productInsert(htmlspecialchars($_POST["title"]),htmlspecialchars($_POST["description"]),htmlspecialchars($_POST["price"]),$extension);
         }
     }
+
+    /*header('Location: products.php');
+    die();*/
 }
 
 ?>
 <!DOCTYPE html>
 <html lang="eng">
 <head>
-    <title><?=translate("Product","en")?></title>
+    <title><?= translate("Product","en") ?></title>
     <link href="public/css/utils.css" rel="stylesheet">
-    <style>#priceErr{
-            color: red;
-        }</style>
 </head>
 <body>
 <main>
-    <form method="POST" action="#" enctype="multipart/form-data">
+    <form method="POST" action="" enctype="multipart/form-data">
         <div class="infos">
-            <input type="text" id="title" name="title"  value="<?=$title?>">
-            <input type="text" id="description" name="description" value="<?=$description?>">
-            <input type="text" id="price" name="price"  value="<?=$price?>">
+            <?php if (isset($_POST["editId"])) : ?>
+                <input type="text" id="title" name="title"  value="<?= $data[intval($_POST["editId"])-1]['title'] ?>">
+                <input type="text" id="description" name="description" value="<?= $data[intval($_POST["editId"])-1]['description'] ?>">
+                <input type="text" id="price" name="price" value="<?= $data[intval($_POST["editId"])-1]['price'] ?>">
+            <?php endif;?>
+            <?php if (!isset($_POST["editId"])) : ?>
+                <input type="text" id="title" name="title" placeholder="<?= isset($_POST['title']) ? $_POST['title'] : 'title' ?>">
+                <input type="text" id="description" name="description" placeholder="<?= isset($_POST['description']) ? $_POST['description'] : 'description' ?>">
+                <input type="text" id="price" name="price" placeholder="<?= isset($_POST['price']) ? $_POST['price'] : 'price' ?>">
+                <p><?= $empty ?></p>
+            <?php endif;?>
             <?php if(!$validationPrice){echo '<p id="priceErr">Price must be numeric</p>';}?>
             <?php if($checkImg!=''){
-                echo '<p>'.$checkImg.'</p>';
-            }?>
+                      echo '<p>'.$checkImg.'</p>';
+                   }
+            ?>
         </div>
         <div class="upload">
             <label for="fileToUpload">Select image to upload</label>

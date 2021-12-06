@@ -18,136 +18,137 @@ class BD{
 }
 //BD::obtain_connexion();
 
-$translate = [];
-$translate['Product Image'] = [
-    'en' => 'Product Image' ,
-    'ro' => 'Imagine Produs' ,
-    "fr" => 'Image du produit' ,
-];
-$translate['Title'] = [
-    'en' => 'Title' ,
-    'ro' => 'Titlu' ,
-    'fr' => 'Titre' ,
-];
-$translate['Description'] = [
-    'en' => 'Description' ,
-    'ro' => 'Descriere' ,
-    'fr' => 'La description' ,
-];
-$translate['Price'] = [
-    'en' => 'Price' ,
-    'ro' => 'Pret' ,
-    'fr' => 'Prix' ,
-];
-$translate['Add'] = [
-    'en' => 'Add' ,
-    'ro' => 'Adauga' ,
-    'fr' => 'Ajouter' ,
-];
-$translate['Go to cart'] = [
-    'en' => 'Go to cart' ,
-    'ro' => 'Catre cos' ,
-    'fr' => 'Quatre corps' ,
-];
-$translate['Index'] = [
-    'en' => 'Index' ,
-    'ro' => 'Index' ,
-    'fr' => 'Indice' ,
-];
-$translate['Cart'] = [
-    'en' => 'Cart' ,
-    'ro' => 'Cos cumparaturi' ,
-    'fr' => 'Chariot' ,
-];
-$translate['Remove'] = [
-    'en' => 'Remove' ,
-    'ro' => 'Scoate din cos' ,
-    'fr' => 'Supprimer' ,
-];
-$translate['Go to index'] = [
-    'en' => 'Go to index' ,
-    'ro' => 'Catre index' ,
-    'fr' => 'Aller à l\'index' ,
-];
-$translate['Checkout'] = [
-    'en' => 'Checkout' ,
-    'ro' => 'Achizitioneaza' ,
-    'fr' => 'ACQUIERT' ,
-];
-$translate['Name'] = [
-    'en' => 'Name' ,
-    'ro' => 'Nume' ,
-    'fr' => 'Nom' ,
-];
-$translate['Contact details'] = [
-    'en' => 'Contact details' ,
-    'ro' => 'Detalii de contact' ,
-    'fr' => 'Détails du contact' ,
-];
-$translate['Comments'] = [
-    'en' => 'Comments',
-    'ro' => 'Comentarii',
-    'fr' => 'Commentaires',
-];
-$translate['Login'] = [
-    'en' => 'Login' ,
-    'ro' => 'Conecteaza-te' ,
-    'fr' => 'Connexion' ,
-];
-$translate['Username'] = [
-    'en' => 'Username' ,
-    'ro' => 'Nume utilizator' ,
-    'fr' => 'Nom d\'utilisateur' ,
-];
-$translate['Password'] = [
-    'en' => 'Password' ,
-    'ro' => 'Parola' ,
-    'fr' => 'Mot de passe' ,
-];
-$translate['Submit'] = [
-    'en' => 'Submit' ,
-    'ro' => 'Trimite' ,
-    'fr' => 'Soumettre' ,
-];
-$translate['Order'] = [
-    'en' => 'Order',
-    'ro' => 'Comanda',
-    'fr' => 'Ordre',
-];
-$translate['Orders'] = [
-    'en' => 'Orders' ,
-    'ro' => 'Comenzi' ,
-    'fr' => 'Ordres' ,
-];
-$translate['Order date'] = [
-    'en' => "Order date" ,
-    'ro' => 'Data comenzii' ,
-    'fr' => 'Date de commande' ,
-];
-$translate['Total price'] = [
-    'en' => 'Total price' ,
-    'ro' => 'Total price for this order' ,
-    'fr' => 'Prix total' ,
-];
-$translate['Product'] = [
-    'en' => 'Product' ,
-    'ro' => 'Produs' ,
-    'fr' => 'Produit' ,
-];
-$translate['Edit'] = [
-    'en' => 'Edit' ,
-    'ro' => 'Editare' ,
-    'fr' => 'Edition' ,
-];
-$translate['Delete'] = [
-    'en' => 'Delete' ,
-    'ro' => 'Sterge' ,
-    'fr' => 'Supprimer' ,
-];
-$translate['Logout'] = [
-    'en' => 'Logout' ,
-    'ro' => 'Deconectare' ,
-    'fr' => 'Coupure' ,
+$translate = [
+    'Product Image' => [
+        'en' => 'Product Image' ,
+        'ro' => 'Imagine Produs' ,
+        "fr" => 'Image du produit' ,
+    ],
+    'Title' => [
+        'en' => 'Title' ,
+        'ro' => 'Titlu' ,
+        'fr' => 'Titre' ,
+    ],
+    'Description' => [
+        'en' => 'Description' ,
+        'ro' => 'Descriere' ,
+        'fr' => 'La description' ,
+    ],
+    'Price' => [
+        'en' => 'Price' ,
+        'ro' => 'Pret' ,
+        'fr' => 'Prix' ,
+    ],
+    'Add' => [
+        'en' => 'Add' ,
+        'ro' => 'Adauga' ,
+        'fr' => 'Ajouter' ,
+    ],
+    'Go to cart' => [
+        'en' => 'Go to cart' ,
+        'ro' => 'Catre cos' ,
+        'fr' => 'Quatre corps' ,
+    ],
+    'Index' => [
+        'en' => 'Index' ,
+        'ro' => 'Index' ,
+        'fr' => 'Indice' ,
+    ],
+    'Cart' => [
+        'en' => 'Cart' ,
+        'ro' => 'Cos cumparaturi' ,
+        'fr' => 'Chariot' ,
+    ],
+    'Remove' => [
+        'en' => 'Remove' ,
+        'ro' => 'Scoate din cos' ,
+        'fr' => 'Supprimer' ,
+    ],
+    'Go to index' => [
+        'en' => 'Go to index' ,
+        'ro' => 'Catre index' ,
+        'fr' => 'Aller à l\'index' ,
+    ],
+    'Checkout'=> [
+        'en' => 'Checkout' ,
+        'ro' => 'Achizitioneaza' ,
+        'fr' => 'ACQUIERT' ,
+    ],
+    'Name' => [
+        'en' => 'Name' ,
+        'ro' => 'Nume' ,
+        'fr' => 'Nom' ,
+    ],
+    'Contact details' => [
+        'en' => 'Contact details' ,
+        'ro' => 'Detalii de contact' ,
+        'fr' => 'Détails du contact' ,
+    ],
+    'Comments' => [
+        'en' => 'Comments' ,
+        'ro' => 'Comentarii' ,
+        'fr' => 'Commentaires' ,
+    ],
+    'Login' => [
+        'en' => 'Login' ,
+        'ro' => 'Conecteaza-te' ,
+        'fr' => 'Connexion' ,
+    ],
+    'Username' => [
+        'en' => 'Username' ,
+        'ro' => 'Nume utilizator' ,
+        'fr' => 'Nom d\'utilisateur' ,
+    ],
+    'Password' => [
+        'en' => 'Password' ,
+        'ro' => 'Parola' ,
+        'fr' => 'Mot de passe' ,
+    ],
+    'Submit' => [
+        'en' => 'Submit' ,
+        'ro' => 'Trimite' ,
+        'fr' => 'Soumettre' ,
+    ],
+    'Order' => [
+        'en' => 'Order' ,
+        'ro' => 'Comanda' ,
+        'fr' => 'Ordre' ,
+    ],
+    'Orders' => [
+        'en' => 'Orders' ,
+        'ro' => 'Comenzi' ,
+        'fr' => 'Ordres' ,
+    ],
+    'Order date' => [
+        'en' => "Order date" ,
+        'ro' => 'Data comenzii' ,
+        'fr' => 'Date de commande' ,
+    ],
+    'Total price' => [
+        'en' => 'Total price' ,
+        'ro' => 'Total price for this order' ,
+        'fr' => 'Prix total' ,
+    ],
+    'Product' => [
+        'en' => 'Product' ,
+        'ro' => 'Produs' ,
+        'fr' => 'Produit' ,
+    ],
+    'Edit' => [
+        'en' => 'Edit' ,
+        'ro' => 'Editare' ,
+        'fr' => 'Edition' ,
+    ],
+    'Delete' => [
+        'en' => 'Delete' ,
+        'ro' => 'Sterge' ,
+        'fr' => 'Supprimer' ,
+    ],
+    'Logout' => [
+        'en' => 'Logout' ,
+        'ro' => 'Deconectare' ,
+        'fr' => 'Coupure' ,
+    ],
 ];
 function translate($text,$language)
 {
@@ -155,19 +156,32 @@ function translate($text,$language)
     return $translate[$text][$language];
 }
 
+
+function getInCartProductsInfo($session)
+{   $str='(0';
+    foreach (array_keys($session) as $item) {
+        $str = $str.$item.',';
+    }
+    $str = rtrim($str,",").')';
+    $sql = 'SELECT * FROM products WHERE id  NOT IN '.$str;
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request -> execute();
+    return $request ->fetchAll();
+}
+
 function getAllProductsInfo()
 {
     $sql = "SELECT * FROM products ";
-    $cerere = BD::obtain_connexion()->prepare($sql);
-    $cerere -> execute();
-    return $cerere->fetchAll();
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request -> execute();
+    return $request ->fetchAll();
 }
 
 function productUpdate($id,$title,$description,$price)
 {
     $sql = "UPDATE products SET  title = :title,description=:description,price=:price where id = :id";
-    $cerere = BD::obtain_connexion()->prepare($sql);
-    $cerere -> execute([
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request -> execute([
         'title' => $title,
         'description' => $description,
         'price' => $price,
@@ -177,8 +191,8 @@ function productUpdate($id,$title,$description,$price)
 
 function productInsert($title,$description,$price,$extension){
     $sql = "INSERT INTO products(title,description,price,fileType)VALUES(:title,:description,:price,:fileType)";
-    $cerere = BD::obtain_connexion()->prepare($sql);
-    $cerere -> execute([
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request -> execute([
         'title' => $title,//htmlspecialchars OR strip_tags For XSS attacks
         'description' => $description,
         'price' => $price,
@@ -188,8 +202,8 @@ function productInsert($title,$description,$price,$extension){
 
 function updateProductExtension($id,$ext){
     $sql = "UPDATE products SET  fileType = :fileType where id = :id";
-    $cerere = BD::obtain_connexion()->prepare($sql);
-    $cerere -> execute([
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request -> execute([
         'fileType' => $ext,
         'id' => $id
     ]);
@@ -197,16 +211,16 @@ function updateProductExtension($id,$ext){
 
 function deleteProduct($id){
     $sql = "DELETE FROM  products where id = :id";
-    $cerere = BD::obtain_connexion()->prepare($sql);
-    $cerere -> execute([
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request -> execute([
         'id' => $id
     ]);
 }
 
 function insertNewOrder($userName,$details,$comments,$productsId){
     $sql = "INSERT INTO orders(userName,contactDetails,comments,productsId,datetime)VALUES(:userName,:contactDetails,:comments,:productsId,:datetime)";
-    $cerere = BD::obtain_connexion()->prepare($sql);
-    $cerere -> execute([
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request -> execute([
         'userName' => $userName,//htmlspecialchars OR strip_tags For XSS attacks
         'contactDetails' => $details,
         'comments' => $comments,
@@ -217,23 +231,23 @@ function insertNewOrder($userName,$details,$comments,$productsId){
 
 function getLastRow(){
     $sql = " select * from orders ORDER BY id DESC LIMIT 1";
-    $cerere = BD::obtain_connexion()->prepare($sql);
-    $cerere -> execute();
-    return $cerere -> fetchAll();
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request -> execute();
+    return $request -> fetchAll();
 }
 
 function selectPropertyByID($id,$property){
     $sql = "SELECT $property FROM products where id=:id";
-    $cerere = BD::obtain_connexion()->prepare($sql);
-    $cerere -> execute([
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request -> execute([
         'id' => $id
     ]);
-    return $cerere->fetchAll();
+    return $request ->fetchAll();
 }
 
 function getAllOrders(){
     $sql = "SELECT * FROM orders ";
-    $cerere = BD::obtain_connexion()->prepare($sql);
-    $cerere -> execute();
-    return $cerere -> fetchAll();
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request -> execute();
+    return $request -> fetchAll();
 }

@@ -1,18 +1,40 @@
 <?php
+session_start();
 require_once "./common.php";
 $data = getAllProductsInfo();
 if (isset($_POST["deleteId"])) {
     if (unlink('images/'.$_POST["deleteId"].'.jpg')) {
         deleteProduct($_POST["deleteId"]);
+        unset($_SESSION['cart'][$_POST["deleteId"]]);//remove from cart
+        header('Location: products.php');
+        die();
     } else {
         unlink('images/'.$_POST["deleteId"].'.png');
         deleteProduct($_POST["deleteId"]);
+        unset($_SESSION['cart'][$_POST["deleteId"]]);//remove from cart
+        header('Location: products.php');
+        die();
     }
 }
 if (isset($_POST["adminLogout"])) {
     header('Location: index.php');
     die();
 }
+if (isset($_POST['Add']) && isset($_SESSION['editId']) ) {
+    unset($_SESSION['editId']);
+    header('Location: product.php');
+    die();
+} else if (isset($_POST['Add'])) {
+    header('Location: product.php');
+    die();
+}
+
+if (isset($_POST['editProduct'])) {
+    $_SESSION['editId'] = $_POST["editId"];
+    header('Location: product.php');
+    die();
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="eng">
@@ -37,7 +59,7 @@ if (isset($_POST["adminLogout"])) {
                             </div>
                         </table>
 
-                        <form method="POST" action="product.php" >
+                        <form method="POST"  >
                             <div>
                                 <input type="submit" name="editProduct" value="<?= translate("Edit","en") ?>">
                                 <input type="hidden" id="editId" name="editId" value="<?= $product['id'] ?>">
@@ -54,8 +76,8 @@ if (isset($_POST["adminLogout"])) {
         <?php endforeach;?>
 
         <div class="optionsAdmin">
-            <form method="POST" action="product.php" >
-                <a href="product.php"><?= translate("Add","en") ?></a>
+            <form method="POST"  >
+                <input type="submit" name="<?= translate("Add","en") ?>" value="<?= translate("Add","en") ?>">
             </form>
             <form method="POST" action="" >
                 <input type="submit" name="adminLogout" value="<?= translate("Logout","en") ?>">

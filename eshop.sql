@@ -26,6 +26,11 @@ CREATE TABLE `orders`(
     `datetime` varchar(50) COLLATE utf8_romanian_ci NOT NULL,
     KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_romanian_ci;
+
+CREATE TABLE `pivot_order`(
+    `idProd` int(10) NOT NULL,
+    `idOrder` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_romanian_ci;
 --
 --  Indexes FOR TABLE `products`
 ALTER TABLE `products`

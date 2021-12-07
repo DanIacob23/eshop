@@ -1,11 +1,11 @@
 <?php
 session_start();
 require_once "./common.php";
-$data = getInCartProductsInfo($_SESSION['cart']);
+
 if (empty( $_SESSION['cart']  )) {
     $_SESSION['cart'] = [];
 }
-
+$data = getInCartProductsInfo($_SESSION['cart']);
 function addToCart($id)
 {
     if (array_key_exists($id, $_SESSION['cart'])) {

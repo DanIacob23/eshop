@@ -149,6 +149,52 @@ $translate = [
         'ro' => 'Deconectare' ,
         'fr' => 'Coupure' ,
     ],
+    'Empty field' => [
+        'en' => 'One of the field is empty' ,
+        'ro' => 'Un camp este gol' ,
+        'fr' => 'One of the field is empty' ,
+    ],
+    'Fill' => [
+        'en' => 'Fill in all the fields:' ,
+        'ro' => 'Completeaza toate campurile' ,
+        'fr' => 'Fill in all the fields:' ,
+    ],
+    'File is img' => [
+        'en' => 'File is an image - ' ,
+        'ro' => 'Fisierul este o imiagine' ,
+        'fr' => 'File is an image - ' ,
+    ],
+    'File is not img' => [
+        'en' => 'File is not an image - ' ,
+        'ro' => 'Fisierul nu este o imiagine' ,
+        'fr' => 'File is not an image - ' ,
+    ],
+    'File too large' => [
+        'en' => 'Sorry, your file is too large' ,
+        'ro' => 'Imaginea este prea mare' ,
+        'fr' => 'Sorry, your file is too large' ,
+    ],
+    'only jpg png' => [
+        'en' => 'Sorry, only JPG, PNG  files are allowed' ,
+        'ro' => 'Doar fisiere JPG sau PNG' ,
+        'fr' => 'Sorry, only JPG, PNG  files are allowed' ,
+    ],
+    'not uploaded' => [
+        'en' => 'Sorry, your file was not uploaded' ,
+        'ro' => 'Fisierul nu a fost incarcat' ,
+        'fr' => 'Sorry, your file was not uploaded' ,
+    ],
+    'uploaded' => [
+        'en' => 'has been uploaded' ,
+        'ro' => 'a fost incarcat' ,
+        'fr' => 'has been uploaded' ,
+    ],
+    'error uploading' => [
+        'en' => 'Sorry, there was an error uploading your file' ,
+        'ro' => 'A aparut o eroare la incaracarea fisierului tau' ,
+        'fr' => 'Sorry, there was an error uploading your file' ,
+    ],
+
 ];
 function translate($text,$language)
 {
@@ -156,6 +202,14 @@ function translate($text,$language)
     return $translate[$text][$language];
 }
 
+function insertIntoPivot($idPivot,$idProduct){
+    $sql = "INSERT INTO pivot_order(idProd,idOrder) VALUES (:idProd,:idOrder)";
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request -> execute([
+        'idProd' => $idPivot,//htmlspecialchars OR strip_tags For XSS attacks
+        'idOrder' => $idProduct
+    ]);
+}
 
 function getInCartProductsInfo($session)
 {   $str='(0';
@@ -229,6 +283,13 @@ function insertNewOrder($userName,$details,$comments,$productsId){
     ]);
 }
 
+function getLastId(){
+    $sql = " select id from products ORDER BY id DESC LIMIT 1";
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request -> execute();
+    return $request -> fetchAll();
+}
+
 function getLastRow(){
     $sql = " select * from orders ORDER BY id DESC LIMIT 1";
     $request = BD::obtain_connexion()->prepare($sql);
@@ -238,6 +299,15 @@ function getLastRow(){
 
 function selectPropertyByID($id,$property){
     $sql = "SELECT $property FROM products where id=:id";
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request -> execute([
+        'id' => $id
+    ]);
+    return $request ->fetchAll();
+}
+
+function selectByID($id){
+    $sql = "SELECT * FROM products where id=:id";
     $request = BD::obtain_connexion()->prepare($sql);
     $request -> execute([
         'id' => $id

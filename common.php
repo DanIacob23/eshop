@@ -202,14 +202,6 @@ function translate($text,$language)
     return $translate[$text][$language];
 }
 
-function insertIntoPivot($idPivot,$idProduct){
-    $sql = "INSERT INTO pivot_order(idProd,idOrder) VALUES (:idProd,:idOrder)";
-    $request = BD::obtain_connexion()->prepare($sql);
-    $request -> execute([
-        'idProd' => $idPivot,//htmlspecialchars OR strip_tags For XSS attacks
-        'idOrder' => $idProduct
-    ]);
-}
 
 function getInCartProductsInfo($session)
 {   $str='(0';
@@ -281,6 +273,18 @@ function insertNewOrder($userName,$details,$comments,$productsId){
         'productsId' => $productsId,
         'datetime' => date("Y/m/d")
     ]);
+    $req = BD::obtain_connexion()->lastInsertId();//insert ninto pivit table using lastinsertId::pdo
+    $produsctaArray = explode("/",trim($productsId, '/'));
+    $str='';
+    foreach($produsctaArray as $item){
+        $str=$str.',('.$req.','.$item.')';
+    }
+    $str = ltrim($str, ',');
+    $sql = 'INSERT INTO pivot_order(idProd,idOrder) VALUES '.$str;
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request -> execute();
+    return $req;
+
 }
 
 function getLastId(){
@@ -290,8 +294,8 @@ function getLastId(){
     return $request -> fetchAll();
 }
 
-function getLastRow(){
-    $sql = " select * from orders ORDER BY id DESC LIMIT 1";
+function getLastRow($lastInsertId){
+    $sql = 'select * from orders where id = '.$lastInsertId.' ORDER BY id DESC LIMIT 1';
     $request = BD::obtain_connexion()->prepare($sql);
     $request -> execute();
     return $request -> fetchAll();
@@ -317,6 +321,13 @@ function selectByID($id){
 
 function getAllOrders(){
     $sql = "SELECT * FROM orders ";
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request -> execute();
+    return $request -> fetchAll();
+}
+
+function leftJoinProducts($lastInsertId){
+    $sql = 'SELECT id,title,description,price,fileType FROM products p LEFT JOIN pivot_order o ON p.id = o.idOrder where o.idProd = '.$lastInsertId;
     $request = BD::obtain_connexion()->prepare($sql);
     $request -> execute();
     return $request -> fetchAll();

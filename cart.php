@@ -80,7 +80,7 @@ if (isset( $_POST["checkout"] )) {
         && $productsId != ''
     ) {
         $_SESSION['cart'] = array();
-        insertNewOrder( strip_tags($_POST["name"]), strip_tags($_POST["contactDetails"]), strip_tags( $_POST["comments"] ), $productsId );
+        $_SESSION['lastInsertId'] = insertNewOrder( strip_tags($_POST["name"]), strip_tags($_POST["contactDetails"]), strip_tags( $_POST["comments"] ), $productsId );
         header('Location: order.php');
         die();
     }

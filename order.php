@@ -1,8 +1,9 @@
 <?php
 require_once "./common.php";
-$lastRow = getLastRow();
-$productsId = ( explode('/', trim($lastRow[0]['productsId'], '/')));
-
+session_start();
+$leftJoin = (leftJoinProducts($_SESSION['lastInsertId']));
+$lastRow = getLastRow($_SESSION['lastInsertId']);
+//$productsId = ( explode('/', trim($lastRow[0]['productsId'], '/')));
 ?>
 
 <!DOCTYPE html>
@@ -21,15 +22,15 @@ $productsId = ( explode('/', trim($lastRow[0]['productsId'], '/')));
         </ul>
         <h3><?= translate("Cart","en") ?>: </h3>
         <div class="cart">
-            <?php foreach (array_values($productsId )as $id): ?>
+            <?php foreach ($leftJoin as $item): ?>
                 <div class="product">
                     <div>
-                        <img class="img-product" src="./images/<?= $id ?><?= selectPropertyByID($id,'fileType')[0]['fileType'] ?>" alt="<?= translate("Product Image","en") ?>">
+                        <img class="img-product" src="./images/<?= $item['id'] ?><?= selectPropertyByID($item['id'],'fileType')[0]['fileType'] ?>" alt="<?= translate("Product Image","en") ?>">
                     </div>
                     <div class="infos">
-                        <h3><?= translate("Title","en") ?> <?= selectPropertyByID($id,'title')[0]['title'] ?></h3>
-                        <p><?= translate("Description","en") ?> <?= selectPropertyByID($id,'description')[0]['description'] ?></p>
-                        <p id="price"><?= translate("Price","en") ?> <?= selectPropertyByID($id,'price')[0]['price'] ?> $</p>
+                        <h3><?= translate("Title","en") ?> <?= $item['title'] ?></h3>
+                        <p><?= translate("Description","en") ?> <?= $item['description'] ?></p>
+                        <p id="price"><?= translate("Price","en") ?> <?= $item['price'] ?> $</p>
                     </div>
                 </div>
             <?php endforeach;?>

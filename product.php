@@ -6,17 +6,6 @@ if (isset($_SESSION['editId'])) {
     $productAbout = selectByID($_SESSION['editId']);
 }
 
-function validation()
-{
-    if (empty($_POST["title"])
-        or empty($_POST["description"])
-        or empty($_POST["price"])
-    ) {
-        throw new Exception(translate('Empty field', 'en'));
-    }
-    return true;
-}
-
 $validationPrice = true;
 if (isset($_POST['price'])) {
     if ($_POST['price'] != '' && !is_numeric($_POST['price'])) {
@@ -26,9 +15,14 @@ if (isset($_POST['price'])) {
 
 $empty = '';
 try {
-    validation() . "\n";
+    if (empty($_POST["title"])
+        or empty($_POST["description"])
+        or empty($_POST["price"])
+    ) {
+        throw new Exception(translate('Empty field', 'en'));
+    }
 } catch (Exception $e) {
-    $empty = translate('Fill', 'en') . $e->getMessage();
+    $empty = translate('Fill', 'en') . ' ' . $e->getMessage();
     $validationPrice = false;
 }
 

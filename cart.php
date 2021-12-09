@@ -1,22 +1,17 @@
 <?php
 require_once "./common.php";
 $data = getInCartProductsInfo($_SESSION['cart']);
-function validation()
-{
+
+$empty = '';
+try {
     if (empty($_POST["name"])
         or empty($_POST["contactDetails"])
         or empty($_POST["comments"])
     ) {
         throw new Exception(translate("on of field empty", "en"));
     }
-    return true;
-}
-
-$empty = '';
-try {
-    validation() . "\n";
 } catch (Exception $e) {
-    $empty = translate("fill all fields", "en") . $e->getMessage();
+    $empty = translate("fill all fields", "en") . ' ' . $e->getMessage();
 }
 
 if (isset($_POST["removeToCart"])) {

@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once "./common.php";
 $data = getAllProductsInfo();
 if (isset($_POST["deleteId"])) {

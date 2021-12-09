@@ -1,22 +1,19 @@
 <?php
-session_start();
 require_once "./common.php";
 
-if (empty( $_SESSION['cart']  )) {
+if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 $data = getInCartProductsInfo($_SESSION['cart']);
-function addToCart($id)
-{
+
+if (isset( $_POST["addCart"] )) {
+    $id = $_POST["id"];
     if (array_key_exists($id, $_SESSION['cart'])) {
         //if already exists
         $_SESSION['cart'][$id] = intval($_SESSION['cart'][$id]) + 1;
     } else {
         $_SESSION['cart'][$id] = 1;
     }
-}
-if (isset( $_POST["addCart"] )) {
-    addToCart($_POST["id"]);
     header('Location: index.php');
     die();
 }
@@ -41,8 +38,8 @@ if (isset( $_POST["addCart"] )) {
                                 <p id="price"><?= translate("Price","en") ?> <?= $product['price'] ?> $</p>
                             </div>
                             <div>
-                            <input type="submit" name="addCart" value="<?= translate("Add","en") ?>">
-                            <input type="hidden" id="id" name="id" value="<?= $product['id'] ?>">
+                                <input type="submit" name="addCart" value="<?= translate("Add","en") ?>">
+                                <input type="hidden" id="id" name="id" value="<?= $product['id'] ?>">
                             </div>
                         </div>
                     </form>

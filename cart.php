@@ -8,7 +8,7 @@ function validation()
         or empty($_POST["contactDetails"])
         or empty($_POST["comments"])
     ) {
-        throw new Exception("One of the field is empty");
+        throw new Exception(translate("on of field empty", "en"));
     }
     return true;
 }
@@ -17,24 +17,21 @@ $empty = '';
 try {
     validation(). "\n";
 } catch (Exception $e) {
-    $empty= 'Fill in all the fields: '.  $e->getMessage();
-}
-function removeToCart($id)
-{
-    unset( $_SESSION['cart'][$id] );
+    $empty= translate("fill all fields", "en").  $e->getMessage();
 }
 
-if (isset( $_POST["removeToCart"] )) {
-    removeToCart($_POST["id"]);
+if (isset($_POST["removeToCart"])) {
+    unset($_SESSION['cart'][$_POST["id"]]);
+
 }
 
-if (isset( $_POST["checkout"] )) {
+if (isset($_POST["checkout"])) {
     $sender = managerMail;
     $recipient = 'daniacob587@gmail.com';
     $to = $recipient;
-    $subject = 'Website Change Requst';
-    $headers = "From: " . strip_tags($sender) . "\r\n";
-    $headers .= "Reply-To: ". strip_tags($sender) . "\r\n";
+    $subject = translate("Website Change Requst", "en");
+    $headers = translate("From", "en").': '.strip_tags($sender)."\r\n";
+    $headers .= translate("Reply-To", "en").': '. strip_tags($sender) . "\r\n";
     $headers .= "CC: susan@example.com\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
     $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
@@ -59,7 +56,8 @@ if (isset( $_POST["checkout"] )) {
                 </div>
             </form>
         <?php endif;?>
-    <?php endforeach;?><p><?= translate("Name","en") ?>: <?= $_POST["name"] ?></p>
+    <?php endforeach;?>
+    <p><?= translate("Name","en") ?>: <?= $_POST["name"] ?></p>
     <p><?= translate("Contact details","en") ?>: <?= $_POST["contactDetails"] ?></p>
     <?php
     $message = ob_get_contents();
@@ -70,7 +68,7 @@ if (isset( $_POST["checkout"] )) {
         echo 'Caught exception: '.  $e->getMessage();
     }
     $productsId = '';
-    foreach ( array_keys( $_SESSION['cart'] ) as $product ) {
+    foreach (array_keys( $_SESSION['cart'] ) as $product) {
         $productsId = $productsId.$product.'/';
     }
     if ( !empty($_POST["name"])
@@ -79,7 +77,7 @@ if (isset( $_POST["checkout"] )) {
         && $productsId != ''
     ) {
         $_SESSION['cart'] = array();
-        $_SESSION['lastInsertId'] = insertNewOrder( strip_tags($_POST["name"]), strip_tags($_POST["contactDetails"]), strip_tags( $_POST["comments"] ), $productsId );
+        $_SESSION['lastInsertId'] = insertNewOrder(strip_tags($_POST["name"]), strip_tags($_POST["contactDetails"]), strip_tags( $_POST["comments"] ), $productsId );
         header('Location: order.php');
         die();
     }
@@ -88,7 +86,7 @@ if (isset( $_POST["checkout"] )) {
 <!DOCTYPE html>
 <html lang="eng">
     <head>
-        <title><?=translate("Cart","en")?></title>
+        <title><?= translate("Cart","en") ?></title>
         <link href="public/css/utils.css" rel="stylesheet">
     </head>
     <body>

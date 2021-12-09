@@ -2,7 +2,6 @@
 require_once "./common.php";
 $leftJoin = (leftJoinProducts($_SESSION['lastInsertId']));
 $lastRow = getLastRow($_SESSION['lastInsertId']);
-//$productsId = ( explode('/', trim($lastRow[0]['productsId'], '/')));
 ?>
 
 <!DOCTYPE html>

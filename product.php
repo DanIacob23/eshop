@@ -135,7 +135,7 @@ if (
     && isset($_POST["price"]) && !empty($_POST["price"])
     && $validationPrice
 ) {
-    if ( isset($_SESSION['editId'])) {// update
+    if (isset($_SESSION['editId'])) {// update
         $title = $_POST["title"];
         $description = $_POST["description"];
         $price = $_POST["price"];

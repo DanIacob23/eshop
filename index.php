@@ -6,7 +6,7 @@ if (!isset($_SESSION['cart'])) {
 }
 $data = getInCartProductsInfo($_SESSION['cart']);
 
-if (isset( $_POST["addCart"] )) {
+if (isset($_POST["addCart"])) {
     $id = $_POST["id"];
     if (array_key_exists($id, $_SESSION['cart'])) {
         //if already exists

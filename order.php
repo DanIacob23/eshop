@@ -24,7 +24,7 @@ $lastRow = getLastRow($_GET['lastInsertId']);
                 <div class="product">
                     <div>
                         <img class="img-product"
-                             src="./images/<?= $item['id'] ?><?= selectPropertyByID($item['id'], 'fileType')[0]['fileType'] ?>"
+                             src="./images/<?= $item['id'] ?><?= $item['fileType'] ?>"
                              alt="<?= translate("Product Image", "en") ?>">
                     </div>
                     <div class="infos">

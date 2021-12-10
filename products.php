@@ -29,8 +29,7 @@ if (isset($_POST['Add']) && isset($_SESSION['editId'])) {
 }
 
 if (isset($_POST['editProduct'])) {
-    $_SESSION['editId'] = $_POST["editId"];
-    header('Location: product.php');
+    header('Location: product.php?editId=' . $_POST["editId"] );
     die();
 }
 

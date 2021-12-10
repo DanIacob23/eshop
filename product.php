@@ -2,8 +2,8 @@
 require_once "./common.php";
 $data = getAllProductsInfo();
 
-if (isset($_SESSION['editId'])) {
-    $productAbout = selectByID($_SESSION['editId']);
+if (isset($_GET['editId'])) {
+    $productAbout = selectByID($_GET['editId']);
 }
 
 $validationPrice = true;
@@ -13,17 +13,15 @@ if (isset($_POST['price'])) {
     }
 }
 
-$empty = '';
-try {
-    if (empty($_POST["title"])
-        or empty($_POST["description"])
-        or empty($_POST["price"])
-    ) {
-        throw new Exception(translate('Empty field', 'en'));
-    }
-} catch (Exception $e) {
-    $empty = translate('Fill', 'en') . ' ' . $e->getMessage();
-    $validationPrice = false;
+$errors = [];
+if (empty($_POST["title"])) {
+    $errors['name'] = translate('Name not set','en');
+}
+if (empty($_POST["description"])) {
+    $errors['description'] = translate('Description not set','en');
+}
+if (empty($_POST["price"])) {
+    $errors['price'] = translate('Price not set','en');
 }
 
 $checkImg = '';
@@ -78,14 +76,14 @@ function updateImage($idd, $target_file, $oldPath)
     }
 }
 
-function insertNewImage()
+function insertNewImage($lastid)
 {
     global $data;
     global $checkImg;
     $target_dir = "images/";
     $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-    $target_file = $target_dir . strval(getLastId()[0]['id']) . '.' . $imageFileType;
+    $target_file = $target_dir . strval($lastid) . '.' . $imageFileType;
     $uploadOk = 1;
 
     // Check if image file is an actual image or fake image
@@ -126,33 +124,37 @@ function insertNewImage()
 
 if (
     isset($_POST["save"])
-    && isset($_POST["title"]) && !empty($_POST["title"])
-    && isset($_POST["description"]) && !empty($_POST["description"])
-    && isset($_POST["price"]) && !empty($_POST["price"])
+    && empty($errors)
     && $validationPrice
 ) {
-    if (isset($_SESSION['editId'])) {// update
+    if (isset($_GET['editId'])) {// update
         $title = $_POST["title"];
         $description = $_POST["description"];
         $price = $_POST["price"];
-        productUpdate($_SESSION['editId'], $title, $description, $price);
+        productUpdate($_GET['editId'], $title, $description, $price);
         if ($_FILES["fileToUpload"]["name"] != '') {
             $oldPath = 'images/' . $_POST["editId"] . $data[intval($_POST["editId"]) - 1]['fileType'];// remove old image
             $extension = '.' . pathinfo(basename($_FILES["fileToUpload"]["name"]), PATHINFO_EXTENSION);//new extension
 
-            updateImage($_SESSION['editId'], "images/" . $_SESSION['editId'] . $extension, $oldPath);//keep old name and update image
-        }//otherwise, it keeps the old image
+            updateImage($_GET['editId'], "images/" . $_GET['editId'] . $extension, $oldPath);//keep old name and update image
+        }
+        header('Location: products.php');
+        die();
+        //otherwise, it keeps the old image
     } else {
         if ($_FILES["fileToUpload"]["name"] != '') {
             // insert new product USING user data
             $extension = '.' . pathinfo(basename($_FILES["fileToUpload"]["name"]), PATHINFO_EXTENSION);
-            productInsert(htmlspecialchars($_POST["title"]), htmlspecialchars($_POST["description"]), htmlspecialchars($_POST["price"]), $extension);
-            insertNewImage();
+            $lastid = productInsert(htmlspecialchars($_POST["title"]), htmlspecialchars($_POST["description"]), htmlspecialchars($_POST["price"]), $extension);
+            insertNewImage($lastid);
+            header('Location: products.php');
+            die();
+        } else {
+            $errors['image'] = translate('not img upload', 'en');
         }
     }
 
-    header('Location: products.php');
-    die();
+
 }
 
 ?>
@@ -166,20 +168,19 @@ if (
 <main>
     <form method="POST" enctype="multipart/form-data">
         <div class="infos">
-            <?php if (isset($_SESSION['editId'])) : ?>
-                <input type="text" id="title" name="title" value="<?= $productAbout[0]['title'] ?>">
-                <input type="text" id="description" name="description" value="<?= $productAbout[0]['description'] ?>">
-                <input type="text" id="price" name="price" value="<?= $productAbout[0]['price'] ?>">
-            <?php endif; ?>
-            <?php if (!isset($_SESSION['editId'])) : ?>
-                <input type="text" id="title" name="title"
-                       placeholder="<?= isset($_POST['title']) ? $_POST['title'] : 'title' ?>">
-                <input type="text" id="description" name="description"
-                       placeholder="<?= isset($_POST['description']) ? $_POST['description'] : 'description' ?>">
-                <input type="text" id="price" name="price"
-                       placeholder="<?= isset($_POST['price']) ? $_POST['price'] : 'price' ?>">
-                <p><?= $empty ?></p>
-            <?php endif; ?>
+            <input type="text" id="title" name="title" placeholder="title"
+                   value="<?= isset($_GET['editId']) ? $productAbout[0]['title'] : (isset($_POST['title']) ? $_POST['title'] : '') ?>">
+            <input type="text" id="description" placeholder="description" name="description"
+                   value="<?= isset($_GET['editId']) ? $productAbout[0]['description'] : (isset($_POST['description']) ? $_POST['description'] : '') ?>">
+            <input type="text" id="price" name="price" placeholder="price"
+                   value="<?= isset($_GET['editId']) ? $productAbout[0]['price'] : (isset($_POST['price']) ? $_POST['price'] : '') ?>">
+            <p><?php if (!empty($errors)) {
+                    foreach ($errors as $err) {
+                        echo $err;
+                        echo '</br>';
+                    }
+                } ?></p>
+
             <?php if (!$validationPrice) {
                 echo '<p id="priceErr">Price must be numeric</p>';
             } ?>

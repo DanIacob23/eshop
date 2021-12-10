@@ -200,4 +200,41 @@ $translate = [
         'ro' => 'Reply-To' ,
         'fr' => 'Reply-To' ,
     ],
+    'not img upload' => [
+        'en' => 'Please uploade an image for insert new products' ,
+        'ro' => 'Please uploade an image for insert new products' ,
+        'fr' => 'Please uploade an image for insert new products' ,
+    ],
+    'Name not set' => [
+        'en' => 'Name not set' ,
+        'ro' => 'Name not set' ,
+        'fr' => 'Name not set' ,
+    ],
+    'Description not set' => [
+        'en' => 'Description not set' ,
+        'ro' => 'Description not set' ,
+        'fr' => 'Description not set' ,
+    ],
+    'Price not set' => [
+        'en' => 'Price not set' ,
+        'ro' => 'Price not set' ,
+        'fr' => 'Price not set' ,
+    ],
+
+    'Comments not set' => [
+        'en' => 'Comments not set' ,
+        'ro' => 'Comments not set' ,
+        'fr' => 'Comments not set' ,
+    ],
+    'Cart is empty' => [
+        'en' => 'Cart is empty' ,
+        'ro' => 'Cart is empty' ,
+        'fr' => 'Cart is empty' ,
+    ],
+    'Caught exception' => [
+    'en' => 'Caught exception' ,
+    'ro' => 'Caught exception' ,
+    'fr' => 'Caught exception' ,
+    ],
+
 ];

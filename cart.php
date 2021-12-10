@@ -2,17 +2,20 @@
 require_once "./common.php";
 $data = getInCartProductsInfo($_SESSION['cart']);
 
-$empty = '';
-try {
-    if (empty($_POST["name"])
-        or empty($_POST["contactDetails"])
-        or empty($_POST["comments"])
-    ) {
-        throw new Exception(translate("on of field empty", "en"));
-    }
-} catch (Exception $e) {
-    $empty = translate("fill all fields", "en") . ' ' . $e->getMessage();
+$errors = [];
+if (empty($_SESSION['cart'])) {
+    $errors['session'] = translate('Cart is empty', 'en');
 }
+if (empty($_POST["name"])) {
+    $errors['name'] = translate('Name not set', 'en');
+}
+if (empty($_POST["contactDetails"])) {
+    $errors['contactDetails'] = translate('Price not set', 'en');
+}
+if (empty($_POST["comments"])) {
+    $errors['comments'] = translate('Comments not set', 'en');
+}
+
 
 if (isset($_POST["removeToCart"])) {
     unset($_SESSION['cart'][$_POST["id"]]);
@@ -20,14 +23,13 @@ if (isset($_POST["removeToCart"])) {
     die();
 }
 
-if (isset($_POST["checkout"])) {
+if (isset($_POST["checkout"]) and empty($errors)) {
     $sender = 'noreply@example.com';
     $recipient = managerMail;
     $to = $recipient;
     $subject = translate("Website Change Requst", "en");
     $headers = translate("From", "en") . ': ' . strip_tags($sender) . "\r\n";
     $headers .= translate("Reply-To", "en") . ': ' . strip_tags($sender) . "\r\n";
-    $headers .= "CC: noreply@example.com\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
     $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
     ob_start();
@@ -55,19 +57,18 @@ if (isset($_POST["checkout"])) {
     <p><?= translate("Contact details", "en") ?>: <?= $_POST["contactDetails"] ?></p>
     <?php
     $message = ob_get_contents();
+    $checkMail = '';
     ob_end_clean();
     try {
         mail($to, $subject, $message, $headers) . "\n";
     } catch (Exception $e) {
-        echo 'Caught exception: ' . $e->getMessage();
+        $checkMail = translate('Caught exception', 'en') . ': ' . $e->getMessage();
     }
     $productsId = '';
     foreach (array_keys($_SESSION['cart']) as $product) {
         $productsId = $productsId . $product . '/';
     }
-    if (!empty($_POST["name"])
-        && !empty($_POST["contactDetails"])
-        && !empty($_POST["comments"])
+    if (empty($errors)
         && $productsId != ''
     ) {
         $_SESSION['cart'] = array();
@@ -105,18 +106,27 @@ if (isset($_POST["checkout"])) {
     <?php endforeach; ?>
     <form method="POST" action="">
         <div class="checkout-details">
-            <input type="text" id="name" name="name" placeholder="<?= translate("Name", "en") ?>">
+            <input type="text" id="name" name="name" placeholder="<?= translate("Name", "en") ?>"
+                   value="<?= isset($_POST['name']) ? $_POST['name'] : '' ?>">
             <input type="text" id="contactDetails" name="contactDetails" size="50"
-                   placeholder="<?= translate("Contact details", "en") ?>">
-            <input type="text" id="comments" name="comments" size="50" placeholder="<?= translate("Comments", "en") ?>">
-            <?php if ($empty != ''): ?>
-                <p><?= $empty ?></p>
-            <?php endif; ?>
+                   placeholder="<?= translate("Contact details", "en") ?>"
+                   value="<?= isset($_POST['contactDetails']) ? $_POST['contactDetails'] : '' ?>">
+            <input type="text" id="comments" name="comments" size="50" placeholder="<?= translate("Comments", "en") ?>"
+                   value="<?= isset($_POST['comments']) ? $_POST['comments'] : '' ?>">
+            <p><?php if (!empty($errors)) {
+                    foreach ($errors as $err) {
+                        echo $err;
+                        echo '</br>';
+                    }
+                } ?></p>
         </div>
         <div class="checkout">
             <a href="index.php"><?= translate("Go to index", "en") ?></a>
             <input type="submit" name="checkout" value="<?= translate("Checkout", "en") ?>">
         </div>
+        <?php if (!empty($checkMail)): ?>
+            <p><?= $checkMail ?></p>
+        <?php endif; ?>
     </form>
 </main>
 </body>

@@ -1,6 +1,7 @@
 <?php
 require_once "./common.php";
 $data = getAllOrders();
+print_r(joinOrders()[0]);
 ?>
 <!DOCTYPE html>
 <html lang="eng">

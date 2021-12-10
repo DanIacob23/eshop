@@ -22,6 +22,20 @@ class BD
 }
 
 //BD::obtain_connexion();
+function joinOrders()
+{
+    $sql = 'SELECT
+	m.*,
+	SUM(p.price) as total
+FROM
+	products p
+	LEFT JOIN pivot_order o ON p.id = o.idProd
+	LEFT JOIN orders m ON m.id = o.idOrder
+	GROUP BY m.id';
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request->execute();
+    return $request->fetchAll();
+}
 
 function translate($text, $language)
 {
@@ -32,28 +46,27 @@ function translate($text, $language)
 
 function getInCartProductsInfo($session)
 {
-    $str = '(0';
-    foreach (array_keys($session) as $item) {
-        $str = $str . $item . ',';
-    }
-    $str = rtrim($str, ",") . ')';
-    $sql = 'SELECT * FROM products WHERE id  IN ' . $str;
+    $arr = array_fill(0, count(array_keys($session)), "?");
+    $sql = 'SELECT * FROM products WHERE id  IN ' . '(' . implode(",", $arr) . ')';
     $request = BD::obtain_connexion()->prepare($sql);
-    $request->execute();
+    $request->execute(array_keys($session));
     return $request->fetchAll();
 }
 
 function getNotInCartProductsInfo($session)
 {
-    $str = '(0';
-    foreach (array_keys($session) as $item) {
-        $str = $str . $item . ',';
+    if (!empty(array_keys($session))) {
+        $arr = array_fill(0, count(array_keys($session)), "?");
+        $sql = 'SELECT * FROM products WHERE id  NOT IN ' . '(' . implode(",", $arr) . ')';
+        $request = BD::obtain_connexion()->prepare($sql);
+        $request->execute(array_keys($session));
+        return $request->fetchAll();
+    } else {
+        $sql = 'SELECT * FROM products';
+        $request = BD::obtain_connexion()->prepare($sql);
+        $request->execute(array_keys($session));
+        return $request->fetchAll();
     }
-    $str = rtrim($str, ",") . ')';
-    $sql = 'SELECT * FROM products WHERE id  NOT IN ' . $str;
-    $request = BD::obtain_connexion()->prepare($sql);
-    $request->execute();
-    return $request->fetchAll();
 }
 
 function getAllProductsInfo()
@@ -86,6 +99,8 @@ function productInsert($title, $description, $price, $extension)
         'price' => $price,
         'fileType' => $extension
     ]);
+    $req = BD::obtain_connexion()->lastInsertId();
+    return $req;
 }
 
 function updateProductExtension($id, $ext)
@@ -122,7 +137,7 @@ function insertNewOrder($userName, $details, $comments, $productsId)
     $produsctaArray = explode("/", trim($productsId, '/'));
     $str = '';
     foreach ($produsctaArray as $item) {
-        $str = $str . ',(' . $req . ',' . $item . ')';
+        $str = $str . ',(' . $item . ',' . $req . ')';
     }
     $str = ltrim($str, ',');
     $sql = 'INSERT INTO pivot_order(idProd,idOrder) VALUES ' . $str;
@@ -132,17 +147,9 @@ function insertNewOrder($userName, $details, $comments, $productsId)
 
 }
 
-function getLastId()
-{
-    $sql = " select id from products ORDER BY id DESC LIMIT 1";
-    $request = BD::obtain_connexion()->prepare($sql);
-    $request->execute();
-    return $request->fetchAll();
-}
-
 function getLastRow($lastInsertId)
 {
-    $sql = 'select * from orders where id = ' . $lastInsertId . ' ORDER BY id DESC LIMIT 1';
+    $sql = 'select * from orders where id = ' . $lastInsertId;
     $request = BD::obtain_connexion()->prepare($sql);
     $request->execute();
     return $request->fetchAll();

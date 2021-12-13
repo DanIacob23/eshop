@@ -37,6 +37,16 @@ FROM
     return $request->fetchAll();
 }
 
+function deleteProductFromOrders($idProduct)
+{
+    $sql = " DELETE FROM pivot_order WHERE idProd = :idProd";
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request->execute([
+        'idProd' => $idProduct
+    ]);
+    return $request->fetchAll();
+}
+
 function translate($text, $language)
 {
     global $translate;
@@ -44,29 +54,39 @@ function translate($text, $language)
 }
 
 
-function getInCartProductsInfo($session)
+function getInCartProductsInfo($cart)
 {
-    $arr = array_fill(0, count(array_keys($session)), "?");
-    $sql = 'SELECT * FROM products WHERE id  IN ' . '(' . implode(",", $arr) . ')';
+    $productIds = array_keys($cart);
+    $arr = array_fill(0, count($productIds), "?");
+    $sql = 'SELECT * FROM products WHERE id  IN (' . implode(",", $arr) . ')';
     $request = BD::obtain_connexion()->prepare($sql);
-    $request->execute(array_keys($session));
+    $request->execute($productIds);
     return $request->fetchAll();
 }
 
-function getNotInCartProductsInfo($session)
+function getNotInCartProductsInfo($cart)
 {
-    if (!empty(array_keys($session))) {
-        $arr = array_fill(0, count(array_keys($session)), "?");
+    $productIds = array_keys($cart);
+    if (!empty($productIds)) {
+        $arr = array_fill(0, count($productIds), "?");
         $sql = 'SELECT * FROM products WHERE id  NOT IN ' . '(' . implode(",", $arr) . ')';
         $request = BD::obtain_connexion()->prepare($sql);
-        $request->execute(array_keys($session));
+        $request->execute($productIds);
         return $request->fetchAll();
     } else {
         $sql = 'SELECT * FROM products';
         $request = BD::obtain_connexion()->prepare($sql);
-        $request->execute(array_keys($session));
+        $request->execute($productIds);
         return $request->fetchAll();
     }
+}
+
+function checkAdminLogin()
+{
+    if (!isset($_SESSION['adminLogin'])) {
+        die('Admin logout');
+    }
+
 }
 
 function getAllProductsInfo()
@@ -122,48 +142,42 @@ function deleteProduct($id)
     ]);
 }
 
-function insertNewOrder($userName, $details, $comments, $productsId)
+function insertNewOrder($userName, $details, $comments, $productsIds)
 {
-    $sql = "INSERT INTO orders(userName,contactDetails,comments,productsId,datetime)VALUES(:userName,:contactDetails,:comments,:productsId,:datetime)";
+    $sql = "INSERT INTO orders(userName,contactDetails,comments,datetime) VALUES (:userName,:contactDetails,:comments,:datetime)";
     $request = BD::obtain_connexion()->prepare($sql);
     $request->execute([
         'userName' => $userName,//htmlspecialchars OR strip_tags For XSS attacks
         'contactDetails' => $details,
         'comments' => $comments,
-        'productsId' => $productsId,
         'datetime' => date("Y/m/d")
     ]);
-    $req = BD::obtain_connexion()->lastInsertId();//insert ninto pivit table using lastinsertId::pdo
-    $produsctaArray = explode("/", trim($productsId, '/'));
-    $str = '';
-    foreach ($produsctaArray as $item) {
-        $str = $str . ',(' . $item . ',' . $req . ')';
-    }
-    $str = ltrim($str, ',');
-    $sql = 'INSERT INTO pivot_order(idProd,idOrder) VALUES ' . $str;
+    $req = BD::obtain_connexion()->lastInsertId();//insert into pivot table using lastInsertId::pdo
+
+    $arr = array_fill(0, count($productsIds), "(?,?)");
+
+    $sql = 'INSERT INTO pivot_order(idProd,idOrder) VALUES ' . implode(",", $arr);
     $request = BD::obtain_connexion()->prepare($sql);
-    $request->execute();
+    $valueForExec = [];
+    foreach ($productsIds as $item) {
+        array_push($valueForExec, $item);
+        array_push($valueForExec, $req);
+    }
+    $request->execute($valueForExec);
     return $req;
 
 }
 
 function getLastRow($lastInsertId)
 {
-    $sql = 'select * from orders where id = ' . $lastInsertId;
-    $request = BD::obtain_connexion()->prepare($sql);
-    $request->execute();
-    return $request->fetchAll();
-}
-
-function selectPropertyByID($id, $property)
-{
-    $sql = "SELECT $property FROM products where id=:id";
+    $sql = "select * from orders where  id = :id";
     $request = BD::obtain_connexion()->prepare($sql);
     $request->execute([
-        'id' => $id
+        'id' => $lastInsertId
     ]);
     return $request->fetchAll();
 }
+
 
 function selectByID($id)
 {
@@ -175,18 +189,109 @@ function selectByID($id)
     return $request->fetchAll();
 }
 
-function getAllOrders()
-{
-    $sql = "SELECT * FROM orders ";
-    $request = BD::obtain_connexion()->prepare($sql);
-    $request->execute();
-    return $request->fetchAll();
-}
 
 function leftJoinProducts($lastInsertId)
 {
-    $sql = 'SELECT id,title,description,price,fileType FROM products p LEFT JOIN pivot_order o ON p.id = o.idOrder where o.idProd = ' . $lastInsertId;
+    $sql = 'SELECT id,title,description,price,fileType FROM products p LEFT JOIN pivot_order o ON p.id = o.idProd where o.idOrder = ?';
     $request = BD::obtain_connexion()->prepare($sql);
-    $request->execute();
+    $request->execute([$lastInsertId]);
     return $request->fetchAll();
+}
+
+function updateImage($idd, $target_file, $oldPath)
+{
+    $checkImg = '';
+    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    $uploadOk = 1;
+    $extension = '.' . pathinfo(basename($target_file), PATHINFO_EXTENSION);
+
+    // Check if image file is an actual image or fake image
+    $check = getimagesize($_FILES['fileToUpload']['tmp_name']);
+    if ($check !== false) {
+        $checkImg = translate('File is img', 'en') . $check['mime'];
+        $uploadOk = 1;
+    } else {
+        $checkImg = translate('File is not img', 'en');
+        $uploadOk = 0;
+    }
+
+    // Check if file already exists
+    if (file_exists($target_file)) {
+        //remove old image
+        unlink($oldPath);
+    }
+
+    // Check file size
+    if ($_FILES['fileToUpload']['size'] > 5000000) {
+        $checkImg = translate('File too large', 'en');
+        $uploadOk = 0;
+    }
+
+    // Allow certain file formats
+    if ($imageFileType != 'jpg' && $imageFileType != 'png' && $imageFileType != 'jpeg') {
+        $checkImg = translate('only jpg png', 'en');
+        $uploadOk = 0;
+    }
+
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        $checkImg = translate('not uploaded', 'en');
+        // if everything is ok, try to upload file
+    } else {
+
+        if (move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $target_file)) {
+            $checkImg = htmlspecialchars(basename($_FILES['fileToUpload']['name'])) . translate('uploaded', 'en');
+            //update new extension
+            updateProductExtension($idd, $extension);
+        } else {
+            $checkImg = translate('error uploading', 'en');
+        }
+    }
+    return $checkImg;
+}
+
+function insertNewImage($lastId)
+{
+    $checkImg = '';
+    $target_dir = "images/";
+    $target_file = $target_dir . basename($_FILES['fileToUpload']['name']);
+    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    $target_file = $target_dir . strval($lastId) . '.' . $imageFileType;
+    $uploadOk = 1;
+
+    // Check if image file is an actual image or fake image
+    $check = getimagesize($_FILES['fileToUpload']['tmp_name']);
+    if ($check !== false) {
+        $checkImg = translate('File is img', 'en') . $check['mime'];
+        $uploadOk = 1;
+    } else {
+        $checkImg = translate('File is not img', 'en');
+        $uploadOk = 0;
+    }
+
+    // Check file size
+    if ($_FILES['fileToUpload']['size'] > 5000000) {
+        $checkImg = translate('File too large', 'en');
+        $uploadOk = 0;
+    }
+
+    // Allow certain file formats
+    if ($imageFileType != 'jpg' && $imageFileType != 'png' && $imageFileType != 'jpeg') {
+        $checkImg = translate('only jpg png', 'en');
+        $uploadOk = 0;
+    }
+
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        $checkImg = translate('not uploaded', 'en');
+        // if everything is ok, try to upload file
+    } else {
+        if (move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $target_file)) {
+            $checkImg = htmlspecialchars(basename($_FILES['fileToUpload']['name'])) . translate('uploaded', 'en');
+        } else {
+            $checkImg = translate('error uploading', 'en');
+        }
+    }
+    return $checkImg;
+
 }

@@ -236,5 +236,4 @@ $translate = [
     'ro' => 'Caught exception' ,
     'fr' => 'Caught exception' ,
     ],
-
 ];

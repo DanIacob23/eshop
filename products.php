@@ -1,35 +1,26 @@
 <?php
 require_once "./common.php";
+checkAdminLogin();
 $data = getAllProductsInfo();
-if (isset($_POST["deleteId"])) {
-    if (unlink('images/' . $_POST["deleteId"] . '.jpg')) {
-        deleteProduct($_POST["deleteId"]);
-        unset($_SESSION['cart'][$_POST["deleteId"]]);//remove from cart
+if (isset($_POST['deleteId'])) {
+    if (unlink('images/' . $_POST['deleteId'] . '.jpg')) {
+        deleteProduct($_POST['deleteId']);
+        deleteProductFromOrders($_POST['deleteId']);
+        unset($_SESSION['cart'][$_POST['deleteId']]);//remove from cart
         header('Location: products.php');
         die();
     } else {
-        unlink('images/' . $_POST["deleteId"] . '.png');
-        deleteProduct($_POST["deleteId"]);
-        unset($_SESSION['cart'][$_POST["deleteId"]]);//remove from cart
+        unlink('images/' . $_POST['deleteId'] . '.png');
+        deleteProduct($_POST['deleteId']);
+        deleteProductFromOrders($_POST['deleteId']);
+        unset($_SESSION['cart'][$_POST['deleteId']]);//remove from cart
         header('Location: products.php');
         die();
     }
 }
-if (isset($_POST["adminLogout"])) {
+if (isset($_POST['adminLogout'])) {
+    unset($_SESSION['adminLogin']);
     header('Location: index.php');
-    die();
-}
-if (isset($_POST['Add']) && isset($_SESSION['editId'])) {
-    unset($_SESSION['editId']);
-    header('Location: product.php');
-    die();
-} else if (isset($_POST['Add'])) {
-    header('Location: product.php');
-    die();
-}
-
-if (isset($_POST['editProduct'])) {
-    header('Location: product.php?editId=' . $_POST["editId"] );
     die();
 }
 
@@ -47,28 +38,27 @@ if (isset($_POST['editProduct'])) {
         <div class="product">
             <div>
                 <img class="img-product" src="./images/<?= $product['id'] ?><?= $product['fileType'] ?>"
-                     alt="<?= translate("Product Image", "en") ?>">
+                     alt="<?= translate('Product Image', 'en') ?>">
             </div>
 
             <table>
                 <div class="infos">
-                    <h3><?= translate("Title", "en") ?>: <?= $product['title'] ?></h3>
-                    <p><?= translate("Description", "en") ?>: <?= $product['description'] ?></p>
-                    <p><?= translate("Price", "en") ?>: <span
-                                style="color:blue;font-weight:bold"><?= $product['price'] ?> $</span>
+                    <h3><?= translate('Title', 'en') ?>: <?= $product['title'] ?></h3>
+                    <p><?= translate('Description', 'en') ?>: <?= $product['description'] ?></p>
+                    <p id="price"><?= translate('Price', 'en') ?>: <?= $product['price'] ?> $
                 </div>
             </table>
 
             <form method="POST">
                 <div>
-                    <input type="submit" name="editProduct" value="<?= translate("Edit", "en") ?>">
                     <input type="hidden" id="editId" name="editId" value="<?= $product['id'] ?>">
+                    <a href="product.php?editId=<?= $product['id'] ?>"><?= translate('Edit', 'en') ?></a>
                 </div>
             </form>
 
-            <form method="POST" action="">
+            <form method="POST" >
                 <div>
-                    <input type="submit" name="deleteProduct" value="<?= translate("Delete", "en") ?>">
+                    <input type="submit" name="deleteProduct" value="<?= translate('Delete', 'en') ?>">
                     <input type="hidden" id="deleteId" name="deleteId" value="<?= $product['id'] ?>">
                 </div>
             </form>
@@ -76,11 +66,9 @@ if (isset($_POST['editProduct'])) {
     <?php endforeach; ?>
 
     <div class="optionsAdmin">
-        <form method="POST">
-            <input type="submit" name="<?= translate("Add", "en") ?>" value="<?= translate("Add", "en") ?>">
-        </form>
+        <a href="product.php"><?= translate('Add', 'en') ?></a>
         <form method="POST" action="">
-            <input type="submit" name="adminLogout" value="<?= translate("Logout", "en") ?>">
+            <input type="submit" name="adminLogout" value="<?= translate('Logout', 'en') ?>">
         </form>
     </div>
 </main>

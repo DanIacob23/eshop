@@ -12,7 +12,6 @@ CREATE TABLE `orders`(
     `userName` varchar(50) COLLATE utf8_romanian_ci NOT NULL,
     `contactDetails` varchar(500) COLLATE utf8_romanian_ci NOT NULL,
     `comments` varchar(50) COLLATE utf8_romanian_ci NOT NULL,
-    `productsId` varchar(500) COLLATE utf8_romanian_ci NOT NULL,
     `datetime` varchar(50) COLLATE utf8_romanian_ci NOT NULL,
     KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_romanian_ci;

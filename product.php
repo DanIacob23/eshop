@@ -76,14 +76,13 @@ function updateImage($idd, $target_file, $oldPath)
     }
 }
 
-function insertNewImage($lastid)
+function insertNewImage($lastId)
 {
-    global $data;
     global $checkImg;
     $target_dir = "images/";
     $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-    $target_file = $target_dir . strval($lastid) . '.' . $imageFileType;
+    $target_file = $target_dir . strval($lastId) . '.' . $imageFileType;
     $uploadOk = 1;
 
     // Check if image file is an actual image or fake image
@@ -145,8 +144,8 @@ if (
         if ($_FILES["fileToUpload"]["name"] != '') {
             // insert new product USING user data
             $extension = '.' . pathinfo(basename($_FILES["fileToUpload"]["name"]), PATHINFO_EXTENSION);
-            $lastid = productInsert(htmlspecialchars($_POST["title"]), htmlspecialchars($_POST["description"]), htmlspecialchars($_POST["price"]), $extension);
-            insertNewImage($lastid);
+            $lastId = productInsert(htmlspecialchars($_POST["title"]), htmlspecialchars($_POST["description"]), htmlspecialchars($_POST["price"]), $extension);
+            insertNewImage($lastId);
             header('Location: products.php');
             die();
         } else {

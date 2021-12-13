@@ -1,7 +1,9 @@
 <?php
 require_once "./common.php";
-$leftJoin = (leftJoinProducts($_GET['lastInsertId']));
-$lastRow = getLastRow($_GET['lastInsertId']);
+if (isset($_GET['lastInsertId'])) {
+    $leftJoin = (leftJoinProducts($_GET['lastInsertId']));
+    $lastRow = getLastRow($_GET['lastInsertId']);
+} else die();
 ?>
 
 <!DOCTYPE html>

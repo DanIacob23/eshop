@@ -104,7 +104,7 @@ if (isset($_POST["checkout"]) and empty($errors)) {
         </form>
 
     <?php endforeach; ?>
-    <form method="POST" action="">
+    <form method="POST" >
         <div class="checkout-details">
             <input type="text" id="name" name="name" placeholder="<?= translate("Name", "en") ?>"
                    value="<?= isset($_POST['name']) ? $_POST['name'] : '' ?>">

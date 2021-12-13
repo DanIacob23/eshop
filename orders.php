@@ -1,7 +1,6 @@
 <?php
 require_once "./common.php";
-$data = getAllOrders();
-print_r(joinOrders()[0]);
+$data = joinOrders();
 ?>
 <!DOCTYPE html>
 <html lang="eng">
@@ -17,23 +16,7 @@ print_r(joinOrders()[0]);
             <p><?= translate("Name", "en") ?>: <?= $product['userName'] ?></p>
             <p><?= translate("Contact details", "en") ?>: <?= $product['contactDetails'] ?></p>
             <p><?= translate("Comments", "en") ?>: <?= $product['comments'] ?></p>
-            <?php $totalPrice = 0; ?>
-            <?php foreach ($productsId = (explode('/', trim($product['productsId'], '/'))) as $item): ?>
-                <?php $totalPrice = $totalPrice + intval(selectPropertyByID($item, 'price')[0]['price']) ?>
-                <div class="productsImage">
-                    <img class="img-product"
-                         src="./images/<?= $item ?><?= selectPropertyByID($item, 'fileType')[0]['fileType'] ?>"
-                         alt="<?= translate("Product Image", "en") ?>">
-                </div>
-                <div class="infos">
-                    <h3><?= translate("Title", "en") ?>: <?= selectPropertyByID($item, 'title')[0]['title'] ?></h3>
-                    <p><?= translate("Description", "en") ?>
-                        : <?= selectPropertyByID($item, 'description')[0]['description'] ?></p>
-                    <p id="price"><?= translate("Price", "en") ?> <?= selectPropertyByID($item, 'price')[0]['price'] ?>
-                        $</p>
-                </div>
-            <?php endforeach; ?>
-            <p><?= translate("Total price", "en") ?>: <?= $totalPrice ?> $</p>
+            <p><?= translate("Total price", "en") ?>: <?= $product['total'] ?> $</p>
         </div>
     <?php endforeach; ?>
 </main>

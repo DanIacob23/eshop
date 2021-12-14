@@ -68,7 +68,7 @@ if (isset($_POST['checkout']) && empty($errors)) {
 
     $lastInsertId = insertNewOrder(strip_tags($_POST['name']), strip_tags($_POST['contactDetails']), strip_tags($_POST['comments']), array_keys($_SESSION['cart']));
     $_SESSION['cart'] = array();
-    header('Location: order.php?lastInsertId=' . $lastInsertId);
+    header('Location: order.php?orderLastInsertId=' . $lastInsertId);
     die();
 }
 ?>

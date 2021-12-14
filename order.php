@@ -1,7 +1,7 @@
 <?php
 require_once "./common.php";
-if (isset($_GET['lastInsertId'])) {
-    $leftJoin = leftJoinProducts($_GET['lastInsertId']);
+if (isset($_GET['orderLastInsertId'])) {
+    $leftJoin = leftJoinProducts($_GET['orderLastInsertId']);
 } else die();
 if (empty($leftJoin)) {
     die();

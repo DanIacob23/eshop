@@ -18,7 +18,7 @@ $data = joinOrders();
             <p><?= translate('Contact details', 'en') ?>: <?= $product['contactDetails'] ?></p>
             <p><?= translate('Comments', 'en') ?>: <?= $product['comments'] ?></p>
             <p><?= translate('Total price', 'en') ?>: <?= $product['total'] ?> $</p>
-            <a href="order.php?lastInsertId=<?= $product['id'] ?>">View order</a>
+            <a href="order.php?orderLastInsertId=<?= $product['id'] ?>">View order</a>
         </div>
     <?php endforeach; ?>
 </main>

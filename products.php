@@ -49,12 +49,11 @@ if (isset($_POST['adminLogout'])) {
                 </div>
             </table>
 
-            <form method="POST">
-                <div>
-                    <input type="hidden" id="editId" name="editId" value="<?= $product['id'] ?>">
-                    <a href="product.php?editId=<?= $product['id'] ?>"><?= translate('Edit', 'en') ?></a>
-                </div>
-            </form>
+
+            <div>
+                <a href="product.php?editId=<?= $product['id'] ?>"><?= translate('Edit', 'en') ?></a>
+            </div>
+
 
             <form method="POST" >
                 <div>

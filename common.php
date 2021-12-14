@@ -37,6 +37,14 @@ FROM
     return $request->fetchAll();
 }
 
+function leftJoinProducts($lastInsertId)
+{
+    $sql = 'SELECT p.id,p.title,p.description,p.price,p.fileType,ord.userName,ord.contactDetails,ord.comments FROM products p LEFT JOIN pivot_order o ON p.id = o.idProd LEFT JOIN orders ord ON ord.id=o.idOrder where o.idOrder = ?';
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request->execute([$lastInsertId]);
+    return $request->fetchAll();
+}
+
 function deleteProductFromOrders($idProduct)
 {
     $sql = " DELETE FROM pivot_order WHERE idProd = :idProd";
@@ -168,16 +176,6 @@ function insertNewOrder($userName, $details, $comments, $productsIds)
 
 }
 
-function getLastRow($lastInsertId)
-{
-    $sql = "select * from orders where  id = :id";
-    $request = BD::obtain_connexion()->prepare($sql);
-    $request->execute([
-        'id' => $lastInsertId
-    ]);
-    return $request->fetchAll();
-}
-
 
 function selectByID($id)
 {
@@ -186,15 +184,6 @@ function selectByID($id)
     $request->execute([
         'id' => $id
     ]);
-    return $request->fetchAll();
-}
-
-
-function leftJoinProducts($lastInsertId)
-{
-    $sql = 'SELECT id,title,description,price,fileType FROM products p LEFT JOIN pivot_order o ON p.id = o.idProd where o.idOrder = ?';
-    $request = BD::obtain_connexion()->prepare($sql);
-    $request->execute([$lastInsertId]);
     return $request->fetchAll();
 }
 

@@ -236,4 +236,19 @@ $translate = [
     'ro' => 'Caught exception' ,
     'fr' => 'Caught exception' ,
     ],
+    'Price must be numeric' => [
+        'en' => 'Price must be numeric' ,
+        'ro' => 'Price must be numeric' ,
+        'fr' => 'Price must be numeric' ,
+    ],
+    'Select image to upload' => [
+        'en' => 'Select image to upload' ,
+        'ro' => 'Select image to upload' ,
+        'fr' => 'Select image to upload' ,
+    ],
+    'Save' => [
+        'en' => 'Save' ,
+        'ro' => 'Save' ,
+        'fr' => 'Save' ,
+    ],
 ];

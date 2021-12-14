@@ -2,9 +2,8 @@
 require_once "./common.php";
 if (isset($_GET['lastInsertId'])) {
     $leftJoin = leftJoinProducts($_GET['lastInsertId']);
-    $lastRow = getLastRow($_GET['lastInsertId']);
 } else die();
-if (empty($leftJoin) || empty($lastRow)) {
+if (empty($leftJoin)) {
     die();
 }
 
@@ -20,9 +19,9 @@ if (empty($leftJoin) || empty($lastRow)) {
 <main>
     <div class="order">
         <ul>
-            <li><?= translate('Name', 'en') ?>: <?= $lastRow[0]['userName'] ?></li>
-            <li><?= translate('Contact details', 'en') ?>: <?= $lastRow[0]['contactDetails'] ?></li>
-            <li><?= translate('Comments', 'en') ?>: <?= $lastRow[0]['comments'] ?></li>
+            <li><?= translate('Name', 'en') ?>: <?= $leftJoin[0]['userName'] ?></li>
+            <li><?= translate('Contact details', 'en') ?>: <?= $leftJoin[0]['contactDetails'] ?></li>
+            <li><?= translate('Comments', 'en') ?>: <?= $leftJoin[0]['comments'] ?></li>
         </ul>
         <h3><?= translate('Cart', 'en') ?>: </h3>
         <div class="cart">

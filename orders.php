@@ -1,5 +1,6 @@
 <?php
 require_once "./common.php";
+checkAdminLogin();
 $data = joinOrders();
 ?>
 <!DOCTYPE html>

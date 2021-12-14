@@ -71,33 +71,34 @@ if (
     <form method="POST" enctype="multipart/form-data">
         <div class="infos">
             <input type="text" id="title" name="title" placeholder="title"
-                   value="<?= isset($_GET['editId']) ? $productAbout[0]['title'] : (isset($_POST['title']) ? $_POST['title'] : '') ?>">
+                   value="<?= isset($_POST['title']) ? $_POST['title'] : (isset($_GET['editId']) ? $productAbout[0]['title'] : '') ?>">
             <input type="text" id="description" placeholder="description" name="description"
-                   value="<?= isset($_GET['editId']) ? $productAbout[0]['description'] : (isset($_POST['description']) ? $_POST['description'] : '') ?>">
+                   value="<?= isset($_POST['description']) ? $_POST['description'] : (isset($_GET['editId']) ? $productAbout[0]['description'] : '') ?>">
             <input type="text" id="price" name="price" placeholder="price"
-                   value="<?= isset($_GET['editId']) ? $productAbout[0]['price'] : (isset($_POST['price']) ? $_POST['price'] : '') ?>">
-            <p><?php if (!empty($errors)) {
-                    foreach ($errors as $err) {
-                        echo $err;
-                        echo '</br>';
-                    }
-                } ?></p>
+                   value="<?= isset($_POST['price']) ? $_POST['price'] : (isset($_GET['editId']) ? $productAbout[0]['price'] : '') ?>">
+            <?php if ((!empty($errors))):
+                foreach ($errors as $err) {
+                    echo '<p id=errColor>'.$err.'</p>';
+                    echo '</br>';
+                } ?>
+            <?php endif; ?>
 
-            <?php if (!$validationPrice) {
-                echo '<p id="priceErr">Price must be numeric</p>';
-            } ?>
-            <?php if ($checkImg != '') {
-                echo '<p>' . $checkImg . '</p>';
-            }
-            ?>
+
+            <?php if (!$validationPrice): ?>
+                <p id="priceErr"><?= translate('Price must be numeric','en') ?></p>
+            <?php endif; ?>
+
+            <?php if ($checkImg != '') : ?>
+                <p><?= $checkImg ?></p>
+            <?php endif; ?>
         </div>
         <div class="upload">
-            <label for="fileToUpload">Select image to upload</label>
+            <label for="fileToUpload"><?= translate('Select image to upload','en') ?></label>
             <input type="file" name="fileToUpload" id="fileToUpload" accept="image/png, image/jpeg">
         </div>
         <div class="save">
             <a href="products.php">Products</a>
-            <input type="submit" name="save" value="Save">
+            <input type="submit" name="save" value="<?= translate('Save','en') ?>">
         </div>
     </form>
 </main>

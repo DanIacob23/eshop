@@ -75,3 +75,9 @@ input{
 #errColor{
     color: red;
 }
+
+.test{
+    display:flex;
+    justify-content: space-between;
+    border: 4px solid blue;
+}

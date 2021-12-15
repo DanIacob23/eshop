@@ -21,7 +21,50 @@ class BD
 
 }
 
+function getAllProdSort($item, $option, $offset, $limit)
+{
+    $sql = 'SELECT * FROM products  ORDER BY ' . $item . ' ' . $option . ' LIMIT ' . $offset . ', ' . $limit;
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request->execute();
+    return $request->fetchAll();
+}
+
 //BD::obtain_connexion();
+function paginationIndexProducts($cart, $offset, $limit)
+{
+    $productIds = array_keys($cart);
+    if (!empty($productIds)) {
+        $arr = array_fill(0, count($productIds), "?");
+        $sql = 'SELECT * FROM products WHERE id  NOT IN ' . '(' . implode(",", $arr) . ') LIMIT ' . $offset . ', ' . $limit;
+        $request = BD::obtain_connexion()->prepare($sql);
+        $request->execute($productIds);
+        return $request->fetchAll();
+    } else {
+        $sql = 'SELECT * FROM products LIMIT ' . $offset . ', ' . $limit;
+        $request = BD::obtain_connexion()->prepare($sql);
+        $request->execute($productIds);
+        return $request->fetchAll();
+    }
+}
+
+function sortProductsByItemIndex($cart, $item, $option, $offset, $limit)
+{
+    $productIds = array_keys($cart);
+
+    if (!empty($productIds)) {
+        $arr = array_fill(0, count($productIds), "?");
+        $sql = 'SELECT * FROM products WHERE id  NOT IN ' . '(' . implode(",", $arr) . ')' . ' ORDER BY ' . $item . ' ' . $option . ' LIMIT ' . $offset . ', ' . $limit;
+        $request = BD::obtain_connexion()->prepare($sql);
+        $request->execute($productIds);
+        return $request;
+    } else {
+        $sql = 'SELECT * FROM products ORDER BY ' . $item . ' ' . $option . ' LIMIT ' . $offset . ', ' . $limit;
+        $request = BD::obtain_connexion()->prepare($sql);
+        $request->execute();
+        return $request;
+    }
+}
+
 function joinOrders()
 {
     $sql = 'SELECT
@@ -96,6 +139,7 @@ function checkAdminLogin()
     }
 
 }
+
 
 function getAllProductsInfo()
 {

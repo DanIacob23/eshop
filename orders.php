@@ -6,57 +6,57 @@ $data = joinOrders();
 //------------------------
 $countProducts = count($data);
 $numberOfPages = ceil($countProducts / 4);//4 product per page
-$productByPage = [];
-if (!isset($_SESSION['numberOfPage'])) {
-    $_SESSION['numberOfPage'] = 1;
-}
 
-for ($id = 1; $id <= 4; $id++) {
-    if ($id <= $countProducts) {
-        array_push($productByPage, $id);
-    }
-}
 //for beginning true for prev false for next
 $isSetNext = 'false';
 $isSetPrev = 'true';
+$sort = '';
+if (isset($_GET['sortOption'])) {
+    $sort = 'sortOption=' . $_GET['sortOption'] . '&';
+}
+
+if (isset($_GET['numberOfPage'])) {
+    if (intval($_GET['numberOfPage']) > 1) {
+        $isSetPrev = 'false';
+    }
+    if ($_GET['numberOfPage'] == $numberOfPages) {
+        $isSetNext = 'true';
+    }
+    if (!isset($_GET['sortOption'])) {
+        $data = joinOrdersLimit(($_GET['numberOfPage'] - 1) * 4, 4);
+    }
+}
 
 if (isset($_POST['prev'])) {
-    if ($_SESSION['numberOfPage'] > 1) {
-        $_SESSION['numberOfPage'] = $_SESSION['numberOfPage'] - 1;
+    if (isset($_GET['numberOfPage'])) {
+        if ($_GET['numberOfPage'] > 1) {
+            header('Location: orders.php?numberOfPage=' . strval(intval($_GET['numberOfPage']) - 1));
+            die();
+        }
     }
-    $_POST['pageNumber'] = $_SESSION['numberOfPage'];
 }
 
 if (isset($_POST['next'])) {
-    if ($_SESSION['numberOfPage'] < $numberOfPages) {
-        $_SESSION['numberOfPage'] = $_SESSION['numberOfPage'] + 1;
-    }
-    $_POST['pageNumber'] = $_SESSION['numberOfPage'];
-}
+    if (!isset($_GET['numberOfPage'])) {
 
-if (isset($_POST['pageNumber'])) {
-    $_SESSION['numberOfPage'] = $_POST['pageNumber'];
-    $productByPage = [];//reset for page
-    for ($id = (($_POST['pageNumber'] - 1) * 4) + 1; $id <= $_POST['pageNumber'] * 4; $id++) {
-        if ($id <= $countProducts) {
-            array_push($productByPage, $id);
+        header('Location: orders.php?' . $sort . 'numberOfPage=2');
+        die();
+    } else {
+        if ($_GET['numberOfPage'] < $numberOfPages) {
+            header('Location: orders.php?numberOfPage=' . strval(intval($_GET['numberOfPage']) + 1));
+            die();
         }
     }
-    $isSetPrev = 'true';
-    $isSetPrev = 'false';
-
-    //true for disable
-    if ($_POST['pageNumber'] == 1) {
-        $isSetPrev = 'true';
-        $isSetNext = 'false';
-    }
-    if ($_POST['pageNumber'] == $numberOfPages) {
-        $isSetNext = 'true';
-        $isSetPrev = 'false';
-    }
+}
+$prevDisable = '';
+$nextDisable = '';
+if ($isSetPrev == 'true') {
+    $prevDisable = 'disabled';
+}
+if ($isSetNext == 'true') {
+    $nextDisable = 'disabled';
 }
 //page refresh ok
-//----------------------
 ?>
 <!DOCTYPE html>
 <html lang="eng">
@@ -66,44 +66,24 @@ if (isset($_POST['pageNumber'])) {
 </head>
 <body>
 <main>
-    <?php if ($isSetPrev == 'false') : ?>
-        <form method="POST">
-            <input type="submit" value="<Prev" name="prev" id="prev">
-        </form>
-    <?php endif; ?>
-    <?php if ($isSetPrev == 'true') : ?>
-        <form method="POST">
-            <input type="submit" value="<Prev" name="prev" id="prev" disabled="disabled">
-        </form>
-    <?php endif; ?>
-    <?php for ($number = 1; $number <= $numberOfPages; $number++) : ?>
-        <form method="POST">
-            <input type="submit" value="<?= $number ?>" name="pageNumber" id="pageNumber">
-        </form>
-    <?php endfor; ?>
+    <div class="pagination">
 
-    <?php if ($isSetNext == 'false') : ?>
         <form method="POST">
-            <input type="submit" value="Next>" name="next" id="next">
+            <input type="submit" value="<Prev" name="prev" id="prev" <?= $prevDisable ?>>
+            <input type="submit" value="Next>" name="next" id="next" <?= $nextDisable ?>>
         </form>
-    <?php endif; ?>
-    <?php if ($isSetNext == 'true') : ?>
-        <form method="POST">
-            <input type="submit" value="Next>" name="next" id="next" disabled="disabled">
-        </form>
-    <?php endif; ?>
+
+    </div>
 
     <?php foreach ($data as $product): ?>
-        <?php if (in_array($product['id'], $productByPage)): ?>
-            <div class="orders">
-                <p id="datetime"><?= translate('Order date', 'en') ?>: <?= $product['datetime'] ?></p>
-                <p><?= translate('Name', 'en') ?>: <?= $product['userName'] ?></p>
-                <p><?= translate('Contact details', 'en') ?>: <?= $product['contactDetails'] ?></p>
-                <p><?= translate('Comments', 'en') ?>: <?= $product['comments'] ?></p>
-                <p><?= translate('Total price', 'en') ?>: <?= $product['total'] ?> $</p>
-                <a href="order.php?orderLastInsertId=<?= $product['id'] ?>">View order</a>
-            </div>
-        <?php endif; ?>
+        <div class="orders">
+            <p id="datetime"><?= translate('Order date', 'en') ?>: <?= $product['datetime'] ?></p>
+            <p><?= translate('Name', 'en') ?>: <?= $product['userName'] ?></p>
+            <p><?= translate('Contact details', 'en') ?>: <?= $product['contactDetails'] ?></p>
+            <p><?= translate('Comments', 'en') ?>: <?= $product['comments'] ?></p>
+            <p><?= translate('Total price', 'en') ?>: <?= $product['total'] ?> $</p>
+            <a href="order.php?orderLastInsertId=<?= $product['id'] ?>">View order</a>
+        </div>
     <?php endforeach; ?>
 </main>
 </body>

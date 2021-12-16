@@ -1,7 +1,7 @@
 <?php
 require_once "./common.php";
 checkAdminLogin();
-$data = getAllProductsInfo();
+$data = getAllProductsLimit(0, 4);
 if (isset($_POST['deleteId'])) {
     if (unlink('images/' . $_POST['deleteId'] . '.jpg')) {
         deleteProduct($_POST['deleteId']);

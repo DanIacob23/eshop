@@ -3,72 +3,7 @@ require_once "./common.php";
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
-$data = getNotInCartProductsInfo($_SESSION['cart']);
-if (isset($_POST['addCart'])) {
-    $id = $_POST['id'];
-    if (array_key_exists($id, $_SESSION['cart'])) {
-        //if already exists
-        $_SESSION['cart'][$id] = intval($_SESSION['cart'][$id]) + 1;
-    } else {
-        $_SESSION['cart'][$id] = 1;
-    }
-    header('Location: index.php');
-    die();
-}
-//------------------------
-$countProducts = count($data);
-$numberOfPages = ceil($countProducts / 4);//4 product per page
 
-//for beginning true for prev false for next
-$isSetNext = 'false';
-$isSetPrev = 'true';
-$sort = '';
-if (isset($_GET['sortOption'])) {
-    $sort = 'sortOption=' . $_GET['sortOption'] . '&';
-}
-
-if (isset($_GET['numberOfPage'])) {
-    if (intval($_GET['numberOfPage']) > 1) {
-        $isSetPrev = 'false';
-    }
-    if ($_GET['numberOfPage'] == $numberOfPages) {
-        $isSetNext = 'true';
-    }
-    if (!isset($_GET['sortOption'])) {
-        $data = paginationIndexProducts($_SESSION['cart'], ($_GET['numberOfPage'] - 1) * 4, 4);
-    }
-}
-
-if (isset($_POST['prev'])) {
-    if (isset($_GET['numberOfPage'])) {
-        if ($_GET['numberOfPage'] > 1) {
-            header('Location: index.php?' . $sort . 'numberOfPage=' . strval(intval($_GET['numberOfPage']) - 1));
-            die();
-        }
-    }
-}
-
-if (isset($_POST['next'])) {
-    if (!isset($_GET['numberOfPage'])) {
-
-        header('Location: index.php?' . $sort . 'numberOfPage=2');
-        die();
-    } else {
-        if ($_GET['numberOfPage'] < $numberOfPages) {
-            header('Location: index.php?' . $sort . 'numberOfPage=' . strval(intval($_GET['numberOfPage']) + 1));
-            die();
-        }
-    }
-}
-$prevDisable = '';
-$nextDisable = '';
-if ($isSetPrev == 'true') {
-    $prevDisable = 'disabled';
-}
-if ($isSetNext == 'true') {
-    $nextDisable = 'disabled';
-}
-//page refresh ok
 $sortOption = [
     'numeasc' => [
         'item' => 'title',
@@ -87,14 +22,40 @@ $sortOption = [
         'option' => 'DESC',
     ],
 ];
+$item = isset($_GET['sortOption']) && isset($sortOption[$_GET['sortOption']]) ? $sortOption[$_GET['sortOption']]['item'] : 'title';
+$option = isset($_GET['sortOption']) && isset($sortOption[$_GET['sortOption']]) ? $sortOption[$_GET['sortOption']]['option'] : 'ASC';
+$results = sortProductsByItemIndex(
+    $_SESSION['cart'],
+    isset($_GET['numberOfPage']) ? $_GET['numberOfPage'] : 1,
+    4,
+    $item,
+    $option
+);
+$data = $results['results'];
+$countProducts = intval($results['total']);
+$numberOfPages = intval($results['numberOfPages']);
+if (isset($_POST['addCart'])) {
+    $id = $_POST['id'];
+    if (array_key_exists($id, $_SESSION['cart'])) {
+        //if already exists
+        $_SESSION['cart'][$id] = intval($_SESSION['cart'][$id]) + 1;
+    } else {
+        $_SESSION['cart'][$id] = 1;
+    }
+    header('Location: index.php');
+    die();
+}
+//------------------------
+
+//for beginning true for prev false for next
+$nextDisable = isset($_GET['numberOfPage']) && intval($_GET['numberOfPage']) >= intval($numberOfPages) ? 'disabled' : '';
+$prevDisable = !isset($_GET['numberOfPage']) || intval($_GET['numberOfPage']) <= 1 ? 'disabled' : '';
 
 if (isset($_POST['sort'])) {
     header('Location: index.php?numberOfPage=1&sortOption=' . $_POST['sortOption']);
     die();
 }
-if (isset($_GET['sortOption'])) {
-    $data = sortProductsByItemIndex($_SESSION['cart'], $sortOption[$_GET['sortOption']]['item'], $sortOption[$_GET['sortOption']]['option'], ($_GET['numberOfPage'] - 1) * 4, 4);
-}
+
 //----------------------
 
 ?>
@@ -109,14 +70,28 @@ if (isset($_GET['sortOption'])) {
     <div class="test">
         <div class="pagination">
 
-            <form method="POST">
-                <input type="submit" value="<Prev" name="prev" id="prev" <?= $prevDisable ?>>
-                <input type="submit" value="Next>" name="next" id="next" <?= $nextDisable ?>>
+            <form method="GET" >
+                <?php if (isset($_GET['sortOption'])): ?>
+                    <input type="hidden" name="sortOption" value="<?= $_GET['sortOption'] ?>">
+                <?php endif; ?>
+                <input type="hidden" name="numberOfPage" value="<?= isset($_GET['numberOfPage']) && intval($_GET['numberOfPage']) > 1 ? --$_GET['numberOfPage'] : 1 ?>">
+                <button type="submit" id="prev" <?= $prevDisable ?>>&lt;Prev</button>
+            </form>
+
+            <form method="GET">
+                <?php if (isset($_GET['sortOption'])): ?>
+                    <input type="hidden" name="sortOption" value="<?= $_GET['sortOption'] ?>">
+                <?php endif; ?>
+                <input type="hidden" name="numberOfPage" value="<?= isset($_GET['numberOfPage']) && intval($_GET['numberOfPage']) < $numberOfPages ? ++$_GET['numberOfPage'] : $numberOfPages ?>">
+                <button type="submit" id="next" <?= $nextDisable ?>>Next&gt;</button>
             </form>
         </div>
 
         <div class="sort">
-            <form method="POST">
+            <form method="GET">
+                <?php if (isset($_GET['numberOfPage'])): ?>
+                    <input type="hidden" name="numberOfPage" value="<?= $_GET['numberOfPage'] ?>"
+                <?php endif; ?>
                 <label for="sortOption">Choose an option for sort products:</label>
                 <select name="sortOption" id="sortOption">
                     <option value="numeasc"><?= translate('Nume ASC', 'en') ?></option>
@@ -125,7 +100,7 @@ if (isset($_GET['sortOption'])) {
                     <option value="pretdesc"><?= translate('PRET DESC', 'en') ?></option>
                 </select>
                 <br><br>
-                <input type="submit" value="<?= translate('Submit', 'en') ?>" name="sort">
+                <input type="submit" value="<?= translate('Submit', 'en') ?>">
             </form>
         </div>
     </div>

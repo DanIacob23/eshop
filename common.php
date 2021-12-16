@@ -41,7 +41,12 @@ function paginationIndexProducts($cart, $offset, $limit)
     $sql = 'SELECT * FROM products '.$implodeIds.' LIMIT ' . $offset . ', ' . $limit;
     $request = BD::obtain_connexion()->prepare($sql);
     $request->execute($productIds);
-    return $request->fetchAll();
+    $requestTotal = BD::obtain_connexion()->prepare("SELECT COUNT(*) as total FROM products $implodeIds");
+    $requestTotal->execute($productIds);
+    return [
+        'results' => $request->fetchAll(),
+        'total' => $requestTotal->fetchColumn()
+    ];
 
 }
 
@@ -52,7 +57,7 @@ function getAllProductsLimit($offset,$limit){
     return $request->fetchAll();
 }
 
-function sortProductsByItemIndex($cart, $item, $option, $offset, $limit)
+function sortProductsByItemIndex($cart = [], $page = 1, $pageSize = 4, $sortBy = 'title', $sortDirection = 'ASC')
 {
     $productIds = array_keys($cart);
     $implodeIds = '';
@@ -60,10 +65,22 @@ function sortProductsByItemIndex($cart, $item, $option, $offset, $limit)
         $arr = array_fill(0, count($productIds), "?");
         $implodeIds = 'WHERE id  NOT IN ' . '(' . implode(",", $arr) . ')';
     }
-    $sql = 'SELECT * FROM products ' .$implodeIds. ' ORDER BY ' . $item . ' ' . $option . ' LIMIT ' . $offset . ', ' . $limit;
+    $requestTotal = BD::obtain_connexion()->prepare("SELECT COUNT(*) as total FROM products $implodeIds");
+    $requestTotal->execute($productIds);
+    $total = intval($requestTotal->fetchColumn());
+    $numberOfPages = ceil($total / 4);
+    $page = min($numberOfPages, max(1, $page));
+    $offset = ($page - 1) * $pageSize;
+    $limit = $pageSize;
+    $sql = 'SELECT * FROM products ' .$implodeIds. ' ORDER BY ' . $sortBy . ' ' . $sortDirection . ' LIMIT ' . $offset . ', ' . $limit;
     $request = BD::obtain_connexion()->prepare($sql);
     $request->execute($productIds);
-    return $request->fetchAll();
+    return [
+        'results' => $request->fetchAll(),
+        'total' => $total,
+        'numberOfPages' => $numberOfPages,
+        'page' => $page
+    ];
 }
 
 function joinOrders()

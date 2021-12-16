@@ -1,7 +1,7 @@
 <?php
 require_once "./common.php";
 checkAdminLogin();
-$data = joinOrders();
+$data = joinOrdersLimit(0, 4);
 
 //------------------------
 $countProducts = count($data);

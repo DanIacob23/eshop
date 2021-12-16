@@ -21,7 +21,51 @@ class BD
 
 }
 
+function getAllProdSort($item, $option, $offset, $limit)
+{
+    $sql = 'SELECT * FROM products  ORDER BY ' . $item . ' ' . $option . ' LIMIT ' . $offset . ', ' . $limit;
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request->execute();
+    return $request->fetchAll();
+}
+
 //BD::obtain_connexion();
+function paginationIndexProducts($cart, $offset, $limit)
+{
+    $productIds = array_keys($cart);
+    $implodeIds = '';
+    if (!empty($productIds)) {
+        $arr = array_fill(0, count($productIds), "?");
+        $implodeIds = ' WHERE id  NOT IN (' . implode(",", $arr) . ')';
+    }
+    $sql = 'SELECT * FROM products '.$implodeIds.' LIMIT ' . $offset . ', ' . $limit;
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request->execute($productIds);
+    return $request->fetchAll();
+
+}
+
+function getAllProductsLimit($offset,$limit){
+    $sql = 'SELECT * FROM products  LIMIT ' . $offset . ', ' . $limit;
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request->execute();
+    return $request->fetchAll();
+}
+
+function sortProductsByItemIndex($cart, $item, $option, $offset, $limit)
+{
+    $productIds = array_keys($cart);
+    $implodeIds = '';
+    if (!empty($productIds)) {
+        $arr = array_fill(0, count($productIds), "?");
+        $implodeIds = 'WHERE id  NOT IN ' . '(' . implode(",", $arr) . ')';
+    }
+    $sql = 'SELECT * FROM products ' .$implodeIds. ' ORDER BY ' . $item . ' ' . $option . ' LIMIT ' . $offset . ', ' . $limit;
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request->execute($productIds);
+    return $request->fetchAll();
+}
+
 function joinOrders()
 {
     $sql = 'SELECT
@@ -32,6 +76,21 @@ FROM
 	LEFT JOIN pivot_order o ON p.id = o.idProd
 	LEFT JOIN orders m ON m.id = o.idOrder
 	GROUP BY m.id';
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request->execute();
+    return $request->fetchAll();
+}
+
+function joinOrdersLimit($offset,$limit)
+{
+    $sql = 'SELECT
+	m.*,
+	SUM(p.price) as total
+FROM
+	products p
+	LEFT JOIN pivot_order o ON p.id = o.idProd
+	LEFT JOIN orders m ON m.id = o.idOrder
+	GROUP BY m.id' .' LIMIT ' . $offset . ', ' . $limit;;
     $request = BD::obtain_connexion()->prepare($sql);
     $request->execute();
     return $request->fetchAll();
@@ -75,18 +134,16 @@ function getInCartProductsInfo($cart)
 function getNotInCartProductsInfo($cart)
 {
     $productIds = array_keys($cart);
+    $implodeIds = '';
     if (!empty($productIds)) {
         $arr = array_fill(0, count($productIds), "?");
-        $sql = 'SELECT * FROM products WHERE id  NOT IN ' . '(' . implode(",", $arr) . ')';
-        $request = BD::obtain_connexion()->prepare($sql);
-        $request->execute($productIds);
-        return $request->fetchAll();
-    } else {
-        $sql = 'SELECT * FROM products';
-        $request = BD::obtain_connexion()->prepare($sql);
-        $request->execute($productIds);
-        return $request->fetchAll();
+        $implodeIds = 'WHERE id  NOT IN ' . '(' . implode(",", $arr) . ')';
     }
+    $sql = 'SELECT * FROM products ' .$implodeIds;
+    $request = BD::obtain_connexion()->prepare($sql);
+    $request->execute($productIds);
+    return $request->fetchAll();
+
 }
 
 function checkAdminLogin()
@@ -96,6 +153,7 @@ function checkAdminLogin()
     }
 
 }
+
 
 function getAllProductsInfo()
 {

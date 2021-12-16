@@ -251,4 +251,24 @@ $translate = [
         'ro' => 'Save' ,
         'fr' => 'Save' ,
     ],
+    'Nume ASC' => [
+        'en' => 'Nume ASC' ,
+        'ro' => 'Nume ASC' ,
+        'fr' => 'Nume ASC' ,
+    ],
+    'NUME DESC' => [
+        'en' => 'NUME DESC' ,
+        'ro' => 'NUME DESC' ,
+        'fr' => 'NUME DESC' ,
+    ],
+    'PRET ASC' => [
+        'en' => 'PRET ASC' ,
+        'ro' => 'PRET ASC' ,
+        'fr' => 'PRET ASC' ,
+    ],
+    'PRET DESC' => [
+        'en' => 'PRET DESC' ,
+        'ro' => 'PRET DESC' ,
+        'fr' => 'PRET DESC' ,
+    ],
 ];
